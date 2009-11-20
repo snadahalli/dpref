@@ -12,11 +12,15 @@ public abstract class Game {
 	while (gameMakesSense()) {
 	    Deal deal = newDeal();
 	    deal.process();
+	    dealPostProcess(deal);
 	    updateGameStatus(deal);
-	    getDeals().add(deal);
+	    deals.add(deal);
 	}
 
     }
+
+
+    protected abstract void dealPostProcess(Deal deal);
 
 
     protected List<Seat> getSeats(){
