@@ -8,14 +8,18 @@ public abstract class Deal {
 
     public void process() throws DealException {
 	serveCards();
-	Move move = createMove();
-	move.process();
-	movePostProcess(move);
-	moves.add(move);
+	while (movesRemain()) {
+	    Move move = createMove();
+	    move.process();
+	    movePostProcess(move);
+	    moves.add(move);
+	}
     }
 
+    protected abstract boolean movesRemain();
+
     protected abstract void movePostProcess(Move move);
-    
+
     protected abstract Move createMove();
 
     protected abstract void serveCards();
@@ -23,4 +27,16 @@ public abstract class Deal {
     public List<Move> getMoves() {
 	return moves;
     }
+
+    @Override
+    public String toString() {
+	StringBuffer sb = new StringBuffer();
+	int i = 1;
+	for (Move move : moves) {
+	    sb.append("\n").append(i).append(". ").append(move);
+	    i++;
+	}
+	return sb.toString();
+    }
+
 }

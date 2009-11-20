@@ -19,7 +19,7 @@ public class Card {
 	}
 	
 	public String toString(){
-		return rank + " of " + suit;
+		return "'" + rank + " " + suit + "'";
 	}
 
 	private static Card[] allCards = new Card[Suit.values().length * Rank.values().length];
