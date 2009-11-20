@@ -3,8 +3,6 @@ package com.dimmik.cards.table;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dimmik.cards.sheets.deck.CardDeck;
-
 public abstract class Game {
     private final List<Deal> deals = new ArrayList<Deal>();
     private List<Seat> seats;
