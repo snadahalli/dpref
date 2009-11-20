@@ -5,18 +5,28 @@ import java.util.List;
 
 import com.dimmik.cards.sheets.card.Card;
 
-public abstract class Seat {
+public class Seat {
 
-    private final LinkedList<Card> cards = new LinkedList<Card>();
+    private IPlayer player;
+    
+    private final List<Card> cards = new LinkedList<Card>();
     public Card nextCard(Move move) {
-	// TODO Auto-generated method stub
-	return null;
+	Card card = player.nextCard(this, move);
+	cards.remove(card);
+	return card;
     }
     public void addCard(Card c){
 	getCards().add(c);
     }
     public List<Card> getCards() {
 	return cards;
+    }
+    
+    public void setPlayer(IPlayer player) {
+	this.player = player;
+    }
+    public IPlayer getPlayer() {
+	return player;
     }
     
 }

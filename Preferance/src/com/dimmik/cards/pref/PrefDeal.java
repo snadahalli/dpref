@@ -5,13 +5,14 @@ import java.util.List;
 import com.dimmik.cards.sheets.card.Card;
 import com.dimmik.cards.sheets.card.Suit;
 import com.dimmik.cards.sheets.deck.CardDeck;
+import com.dimmik.cards.sheets.deck.ICardDeck;
 import com.dimmik.cards.sheets.deck.PrefCardInitStrategy;
 import com.dimmik.cards.table.Deal;
 import com.dimmik.cards.table.Move;
 import com.dimmik.cards.table.Seat;
 
 public class PrefDeal extends Deal {
-    private final CardDeck deck = new CardDeck(new PrefCardInitStrategy());
+    private final ICardDeck deck = new CardDeck(new PrefCardInitStrategy());
     private final List<Seat> seats;
     private final int firstMoveSeatIdx;
     private List<Card> sideCards;
