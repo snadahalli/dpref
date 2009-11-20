@@ -27,7 +27,6 @@ public abstract class Game {
 	return seats;
     }
 
-    protected abstract CardDeck getDeck();
     
     protected abstract void updateGameStatus(Deal deal);
 

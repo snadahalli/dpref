@@ -12,9 +12,7 @@ public class PrefGame extends Game {
 
     private final int maxDeals = 1;
 
-    
     private final List<Seat> seats;
-    private final CardDeck deck = new CardDeck(new PrefCardInitStrategy());
     
     private int firstDealSeatNumber = 0;
     
@@ -26,11 +24,6 @@ public class PrefGame extends Game {
     }
     
     @Override
-    protected CardDeck getDeck() {
-	return deck;
-    }
-
-    @Override
     protected boolean gameMakesSense() {
 	// TODO change to real decision if the game makes sense.
 	return getDeals().size() < maxDeals; 
@@ -39,7 +32,7 @@ public class PrefGame extends Game {
 
     @Override
     protected Deal newDeal() {
-	return new PrefDeal(deck, seats, firstDealSeatNumber);
+	return new PrefDeal(seats, firstDealSeatNumber);
     }
 
     @Override
