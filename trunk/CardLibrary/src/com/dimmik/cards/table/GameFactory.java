@@ -2,8 +2,8 @@ package com.dimmik.cards.table;
 
 import java.util.List;
 
-public abstract class GameFactory {
+public interface GameFactory {
 
-    public abstract Game createGame(List<Seat> seats);
+    Game createGame(List<Seat> seats);
 
 }

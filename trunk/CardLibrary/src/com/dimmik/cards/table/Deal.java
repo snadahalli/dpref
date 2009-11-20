@@ -3,39 +3,24 @@ package com.dimmik.cards.table;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Deal {
-    //private ICardDeck deck;
-    private Seat[] seats;
+public abstract class Deal {
     private final List<Move> moves = new ArrayList<Move>();
-    public void process() throws DealException{
+
+    public void process() throws DealException {
 	serveCards();
-	Seat first = firstMovingSeat();
-	Move move = createMove(first);
+	Move move = createMove();
 	move.process();
-	updateDealStatus(move);
+	movePostProcess(move);
 	moves.add(move);
     }
+
+    protected abstract void movePostProcess(Move move);
     
-    
-    private Seat firstMovingSeat() {
-	// TODO Auto-generated method stub
-	return null;
+    protected abstract Move createMove();
+
+    protected abstract void serveCards();
+
+    public List<Move> getMoves() {
+	return moves;
     }
-
-
-    private void updateDealStatus(Move move) {
-	// TODO Auto-generated method stub
-	
-    }
-
-
-    private Move createMove(Seat first) {
-	// TODO Auto-generated method stub
-	return null;
-    }
-    private void serveCards() {
-	// TODO Auto-generated method stub
-	
-    }
-
 }
