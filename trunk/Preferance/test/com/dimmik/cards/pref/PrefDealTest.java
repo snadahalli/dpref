@@ -14,6 +14,7 @@ import com.dimmik.cards.table.Seat;
 import junit.framework.TestCase;
 
 public class PrefDealTest extends TestCase {
+    @SuppressWarnings("serial")
     public void testDeal() throws Throwable{
 	List<Seat> seats = new ArrayList<Seat>(){{
 		   add(new Seat("West")); 
