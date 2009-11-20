@@ -1,7 +1,6 @@
 package com.dimmik.cards.sheets.deck;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.dimmik.cards.sheets.card.Card;
