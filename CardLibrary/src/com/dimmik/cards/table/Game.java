@@ -18,13 +18,16 @@ public abstract class Game {
     }
 
 
-    protected abstract void dealPostProcess(Deal deal);
 
 
     protected List<Seat> getSeats(){
 	return seats;
     }
+    public List<Deal> getDeals() {
+	return deals;
+    }
 
+    protected abstract void dealPostProcess(Deal deal);
     
     protected abstract void updateGameStatus(Deal deal);
 
@@ -32,8 +35,5 @@ public abstract class Game {
 
     protected abstract Deal newDeal();
 
-    public List<Deal> getDeals() {
-	return deals;
-    }
 
 }
