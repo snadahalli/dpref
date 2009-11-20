@@ -4,8 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Deal {
+    private final String name;
     private final List<Move> moves = new ArrayList<Move>();
 
+    public Deal(String name) {
+	this.name = name;
+    }
+    
     public void process() throws DealException {
 	serveCards();
 	while (movesRemain()) {
@@ -37,6 +42,10 @@ public abstract class Deal {
 	    i++;
 	}
 	return sb.toString();
+    }
+
+    public String getName() {
+	return name;
     }
 
 }
