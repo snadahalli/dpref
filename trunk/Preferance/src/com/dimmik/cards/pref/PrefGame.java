@@ -8,7 +8,7 @@ import com.dimmik.cards.table.Seat;
 
 public class PrefGame extends Game {
 
-    private final int maxDeals = 1;
+    private final int maxDeals = 3;
 
     private final List<Seat> seats;
     
@@ -30,7 +30,7 @@ public class PrefGame extends Game {
 
     @Override
     protected Deal newDeal() {
-	return new PrefDeal(seats, firstDealSeatNumber);
+	return new PrefDeal("" + getDeals().size(), seats, firstDealSeatNumber);
     }
 
     @Override

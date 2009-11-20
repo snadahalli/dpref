@@ -24,7 +24,7 @@ public class PrefDealTest extends TestCase {
 	for (Seat s : seats) {
 	    s.setPlayer(new DumbPlayer());
 	}
-	Deal d = new PrefDeal(seats, 0);
+	Deal d = new PrefDeal("test", seats, 0);
 	d.process();
 	System.out.println("deal: " + d);
 	Set<Card> cardSet = new HashSet<Card>();

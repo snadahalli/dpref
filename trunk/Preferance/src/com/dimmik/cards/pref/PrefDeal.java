@@ -20,7 +20,8 @@ public class PrefDeal extends Deal {
     private List<Card> sideCards = new ArrayList<Card>();
     private List<Card> thrownCards = new ArrayList<Card>();
 
-    public PrefDeal(List<Seat> seats, int firstMove) {
+    public PrefDeal(String name, List<Seat> seats, int firstMove) {
+	super(name);
 	this.seats = seats;
 	firstMoveSeatIdx = firstMove;
 	currentMove = firstMoveSeatIdx;
