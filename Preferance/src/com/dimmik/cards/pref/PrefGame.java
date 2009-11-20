@@ -2,8 +2,6 @@ package com.dimmik.cards.pref;
 
 import java.util.List;
 
-import com.dimmik.cards.sheets.deck.CardDeck;
-import com.dimmik.cards.sheets.deck.PrefCardInitStrategy;
 import com.dimmik.cards.table.Deal;
 import com.dimmik.cards.table.Game;
 import com.dimmik.cards.table.Seat;

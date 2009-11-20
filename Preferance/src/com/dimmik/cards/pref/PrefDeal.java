@@ -75,4 +75,12 @@ public class PrefDeal extends Deal {
     protected boolean movesRemain() {
 	return (seats.get(0).getCards().size() > 0);
     }
+
+    public List<Card> getSideCards() {
+        return sideCards;
+    }
+
+    public List<Card> getThrownCards() {
+        return thrownCards;
+    }
 }
