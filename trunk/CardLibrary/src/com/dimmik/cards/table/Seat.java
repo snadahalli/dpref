@@ -11,8 +11,6 @@ public class Seat {
   private final String name;
   private IPlayer player;
 
-  private final List<Move> tricks = new ArrayList<Move>();
-
   private final List<Card> cards = new LinkedList<Card>();
 
   public Seat(String name) {
@@ -48,18 +46,6 @@ public class Seat {
   @Override
   public String toString() {
     return name;
-  }
-
-  public List<Move> getTricks() {
-    return tricks;
-  }
-
-  public void addTrick(Move m) {
-    tricks.add(m);
-  }
-
-  public void resetTricks() {
-    tricks.clear();
   }
 
 }
