@@ -110,4 +110,12 @@ public class PrefDeal extends Deal {
   public Map<Seat, List<Move>> getTricks() {
     return tricks;
   }
+
+  @Override
+  protected void performTrade() {
+    // TODO perform trade, yeah
+    // Decide what will be trump
+    // and so on
+    
+  }
 }
