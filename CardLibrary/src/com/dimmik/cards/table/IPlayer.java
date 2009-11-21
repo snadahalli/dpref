@@ -4,6 +4,6 @@ import com.dimmik.cards.sheets.card.Card;
 
 public interface IPlayer {
 
-    Card nextCard(Seat seat, Move move);
+  Card nextCard(Seat seat, Move move);
 
 }

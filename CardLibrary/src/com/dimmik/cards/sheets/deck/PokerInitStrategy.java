@@ -10,16 +10,16 @@ import com.dimmik.cards.sheets.card.Suit;
 
 public class PokerInitStrategy implements ICardInitStrategy {
 
-	@Override
-	public Iterable<Card> initialCards() {
-		List<Card> cards = new ArrayList<Card>(32);
-		for (Suit s : Suit.values()) {
-			for (Rank r : Rank.values()) {
-				cards.add(Card.getInstance(s, r));
-			}
-		}
-		Collections.shuffle(cards);
-		return cards;
-	}
+  @Override
+  public Iterable<Card> initialCards() {
+    List<Card> cards = new ArrayList<Card>(32);
+    for (Suit s : Suit.values()) {
+      for (Rank r : Rank.values()) {
+        cards.add(Card.getInstance(s, r));
+      }
+    }
+    Collections.shuffle(cards);
+    return cards;
+  }
 
 }
