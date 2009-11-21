@@ -7,14 +7,14 @@ import com.dimmik.cards.table.Seat;
 
 public class DumbPlayer implements IPlayer {
 
-    public Card nextCard(Seat seat, Move move) {
-	for (Card card : seat.getCards()) {
-	    if (move.isCardAcceptable(card, seat)) {
-		return card;
-	    }
-	}
-	// if nothing was chosen
-	return seat.getCards().get(0);
+  public Card nextCard(Seat seat, Move move) {
+    for (Card card : seat.getCards()) {
+      if (move.isCardAcceptable(card, seat)) {
+        return card;
+      }
     }
+    // if nothing was chosen
+    return seat.getCards().get(0);
+  }
 
 }

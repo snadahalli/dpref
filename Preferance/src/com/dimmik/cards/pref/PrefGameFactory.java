@@ -8,8 +8,8 @@ import com.dimmik.cards.table.Seat;
 
 public class PrefGameFactory implements GameFactory {
 
-    public Game createGame(List<Seat> seats) {
-	return new PrefGame(seats);
-    }
+  public Game createGame(List<Seat> seats) {
+    return new PrefGame(seats);
+  }
 
 }
