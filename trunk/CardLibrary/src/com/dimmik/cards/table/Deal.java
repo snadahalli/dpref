@@ -15,6 +15,7 @@ public abstract class Deal {
 
   public void process() throws DealException {
     serveCards();
+    performTrade();
     while (isThereMoreMoves()) {
       Move move = createMove();
       move.process();
@@ -22,6 +23,8 @@ public abstract class Deal {
       moves.add(move);
     }
   }
+
+  protected abstract void performTrade();
 
   protected abstract boolean isThereMoreMoves();
 
