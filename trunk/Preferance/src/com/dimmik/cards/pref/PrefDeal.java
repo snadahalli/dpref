@@ -1,7 +1,9 @@
 package com.dimmik.cards.pref;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.dimmik.cards.sheets.card.Card;
 import com.dimmik.cards.sheets.card.Suit;
@@ -20,13 +22,15 @@ public class PrefDeal extends Deal {
   private List<Card> sideCards = new ArrayList<Card>();
   private List<Card> thrownCards = new ArrayList<Card>();
 
+  private final Map<Seat, List<Move>> tricks = new HashMap<Seat, List<Move>>();
+
   public PrefDeal(String name, List<Seat> seats, int firstMove) {
     super(name);
     this.seats = seats;
     firstMoveSeatIdx = firstMove;
     currentMove = firstMoveSeatIdx;
-    for (Seat s : seats) {
-      s.resetTricks();
+    for (Seat seat : seats){
+      tricks.put(seat, new ArrayList<Move>());
     }
   }
 
@@ -61,11 +65,20 @@ public class PrefDeal extends Deal {
   @Override
   protected void movePostProcess(Move move) {
     Seat winner = move.whoWon();
-    winner.addTrick(move);
+    addTrick(winner, move);
     currentMove = seats.indexOf(winner);
     if (currentMove > 2) {
       System.out.println("move: " + currentMove);
     }
+  }
+
+  private void addTrick(Seat winner, Move move) {
+    List<Move> seatMoves = getTricks().get(winner);
+    if (seatMoves == null) {
+      seatMoves = new ArrayList<Move>();
+      getTricks().put(winner, seatMoves);
+    }
+    seatMoves.add(move);
   }
 
   public void setDeck(ICardDeck deck) {
@@ -81,7 +94,7 @@ public class PrefDeal extends Deal {
   }
 
   @Override
-  protected boolean movesRemain() {
+  protected boolean isThereMoreMoves() {
     return (seats.get(0).getCards().size() > 0);
   }
 
@@ -91,5 +104,10 @@ public class PrefDeal extends Deal {
 
   public List<Card> getThrownCards() {
     return thrownCards;
+  }
+
+  @Override
+  public Map<Seat, List<Move>> getTricks() {
+    return tricks;
   }
 }

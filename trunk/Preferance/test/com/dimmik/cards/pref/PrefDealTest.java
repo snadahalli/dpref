@@ -3,6 +3,7 @@ package com.dimmik.cards.pref;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.dimmik.cards.prefplayers.DumbPlayer;
@@ -26,7 +27,7 @@ public class PrefDealTest extends TestCase {
     for (Seat s : seats) {
       s.setPlayer(new DumbPlayer());
     }
-    Deal d = new PrefDeal("test", seats, 0);
+    PrefDeal d = new PrefDeal("test", seats, 0);
     d.process();
     System.out.println("deal: " + d);
     Set<Card> cardSet = new HashSet<Card>();
@@ -36,8 +37,9 @@ public class PrefDealTest extends TestCase {
       }
     }
     assertEquals(30, cardSet.size());
-    for (Seat s : seats) {
-      System.out.println(s + " -- " + s.getTricks().size());
+    for (Seat seat : d.getTricks().keySet()) {
+      List<Move> moves = d.getTricks().get(seat);
+      System.out.println(seat + ": " + moves.size() + " tricks");
     }
   }
 }
