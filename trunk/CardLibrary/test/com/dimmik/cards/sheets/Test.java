@@ -7,21 +7,22 @@ import com.dimmik.cards.sheets.deck.PrefCardInitStrategy;
 
 public class Test {
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		ICardDeck deck = new CardDeck(new PrefCardInitStrategy());
-		int i = 0;
-		for (Card c: deck){
-			System.out.println((++i) + " : " + c);
-		}
-		while (deck.hasMoreCards()){
-			System.out.println("capacity: " + deck.getCapacity() + " next: " + deck.getNextCard());
-		}
-		for (Card c: deck){
-			System.out.println((++i) + " : " + c);
-		}
-	}
+  /**
+   * @param args
+   */
+  public static void main(String[] args) {
+    ICardDeck deck = new CardDeck(new PrefCardInitStrategy());
+    int i = 0;
+    for (Card c : deck) {
+      System.out.println((++i) + " : " + c);
+    }
+    while (deck.hasMoreCards()) {
+      System.out.println("capacity: " + deck.getCapacity() + " next: "
+          + deck.getNextCard());
+    }
+    for (Card c : deck) {
+      System.out.println((++i) + " : " + c);
+    }
+  }
 
 }
