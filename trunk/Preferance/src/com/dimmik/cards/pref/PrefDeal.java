@@ -116,6 +116,8 @@ public class PrefDeal extends Deal {
     // TODO perform trade, yeah
     // Decide what will be trump
     // and so on
+    // While makes sense - ask seats for bid.
+    // 
     
   }
 }
