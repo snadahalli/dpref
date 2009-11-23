@@ -23,6 +23,12 @@ import com.dimmik.cards.table.Seat;
  */
 public class DumbPlayer implements IPlayer {
 
+  private final int passProbability;
+  
+  public DumbPlayer(int passProbability) {
+    this.passProbability = passProbability;
+  }
+  
   public Card nextCard(Seat seat, Move move) {
     for (Card card : seat.getCards()) {
       if (move.isCardAcceptable(card, seat)) {
@@ -91,7 +97,7 @@ public class DumbPlayer implements IPlayer {
 
   protected void setBid(Seat seat, PrefDeal d, PrefTradeStepInfo bc) {
     int prob = r.nextInt(100);
-    boolean doPass = prob > 10;
+    boolean doPass = prob < passProbability;
     Bid bid;
     if (doPass) {
       bid = Bid.PASS;

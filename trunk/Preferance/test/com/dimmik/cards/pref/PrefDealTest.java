@@ -16,7 +16,7 @@ public class PrefDealTest extends TestCase {
     List<Seat> seats = PrefTestUtility.getSeats();
     PrefDeal d = new PrefDeal("test", seats, 0);
     d.process();
-    //System.out.println("deal: " + d);
+    // System.out.println("deal: " + d);
     Set<Card> cardSet = new HashSet<Card>();
     for (Move m : d.getMoves()) {
       for (Card card : m.getCards()) {
@@ -25,8 +25,8 @@ public class PrefDealTest extends TestCase {
     }
     assertEquals(30, cardSet.size());
   }
-  
-  public void testDealWithTradeCheck() throws Throwable{
+
+  public void testDealWithTradeCheck() throws Throwable {
     List<Seat> seats = PrefTestUtility.getSeats();
     PrefDeal d = new PrefDeal("test", seats, 0);
     d.process();
@@ -37,5 +37,12 @@ public class PrefDealTest extends TestCase {
     }
     Contract c = d.getContract();
     System.out.println("trade: \n" + c);
+  }
+
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+    System.out.println();
+    System.out.println(this.getClass());
   }
 }

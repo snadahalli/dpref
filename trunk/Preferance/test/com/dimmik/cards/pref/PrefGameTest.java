@@ -13,7 +13,8 @@ import com.dimmik.cards.table.Seat;
 public class PrefGameTest extends TestCase {
   
   public void testGame() throws Throwable {
-    int gamesCnt = 5;
+    System.out.println("testGame");
+    int gamesCnt = 15;
     List<Seat> seats = PrefTestUtility.getSeats();
     GameFactory factory = new PrefGameFactory(gamesCnt);
     Game game = factory.createGame(seats);
@@ -33,5 +34,12 @@ public class PrefGameTest extends TestCase {
       }
       assertEquals(10, tricks);
     }
+  }
+
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+    System.out.println();
+    System.out.println(this.getClass());
   }
 }

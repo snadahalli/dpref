@@ -7,7 +7,16 @@ import com.dimmik.cards.table.Deal;
 import com.dimmik.cards.table.Game;
 import com.dimmik.cards.table.Seat;
 
+/*
+ * TODO deal with "all pas"
+ * TODO score update
+ */
 
+/**
+ * 
+ * @author dkandrievsky
+ *
+ */
 public class PrefGame extends Game {
 
   private final List<Seat> seats;

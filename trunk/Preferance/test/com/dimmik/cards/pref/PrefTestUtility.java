@@ -11,13 +11,14 @@ public class PrefTestUtility {
   public static List<Seat> getSeats() {
     List<Seat> seats = new ArrayList<Seat>() {
       {
-        add(new Seat("West"));
-        add(new Seat("North"));
-        add(new Seat("East"));
+        add(new Seat("West 50%pass"));
+        add(new Seat("North 30%pass"));
+        add(new Seat("East 70%pass"));
       }
     };
-    for (Seat s : seats) {
-      s.setPlayer(new DumbPlayer());
+    int[] passProbs = new int[]{50, 30, 70};
+   for (int i = 0; i < 3; i ++){
+      seats.get(i).setPlayer(new DumbPlayer(passProbs[i]));
     }
     return seats;
   }
