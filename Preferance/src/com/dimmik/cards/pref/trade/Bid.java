@@ -13,13 +13,14 @@ public class Bid {
     if (r == null) {
       throw new IllegalArgumentException("rank can not be null");
     }
-    name = r + " of " + s;
+    name = r + " of " + (s == null ? "NO TRUMP" : s);
   }
   private Bid(String name) {
     suit = null;
     rank = null;
     this.name = name;
   }
+  
   public static Bid valueOf(Suit suit, Rank rank) {
     return new Bid(suit, rank);
   }
@@ -32,6 +33,9 @@ public class Bid {
   }
   public Rank getRank() {
     return rank;
+  }
+  public boolean isNoTrump(){
+    return suit == null;
   }
   public String getName() {
     return name;
@@ -72,5 +76,8 @@ public class Bid {
       return false;
     return true;
   }
-  
+  @Override
+  public String toString(){
+    return name;
+  }
 }

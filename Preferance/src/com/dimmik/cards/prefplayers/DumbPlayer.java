@@ -2,12 +2,12 @@ package com.dimmik.cards.prefplayers;
 
 import java.util.Random;
 
-import com.dimmik.cards.pref.PrefBidContainer;
+import com.dimmik.cards.pref.PrefTradeStepResult;
 import com.dimmik.cards.pref.PrefDeal;
 import com.dimmik.cards.pref.trade.Bid;
 import com.dimmik.cards.sheets.card.Card;
 import com.dimmik.cards.table.Deal;
-import com.dimmik.cards.table.IBidContainer;
+import com.dimmik.cards.table.ITradeStepResult;
 import com.dimmik.cards.table.IPlayer;
 import com.dimmik.cards.table.Move;
 import com.dimmik.cards.table.Seat;
@@ -31,14 +31,14 @@ public class DumbPlayer implements IPlayer {
     return seat.getCards().get(0);
   }
 
-  public final void tradeStep(Deal d, IBidContainer bc) {
+  public final void tradeStep(Deal d, ITradeStepResult bc) {
     if (!(d instanceof PrefDeal)) {
       throw new IllegalStateException("deal must be PrefDeal");
     }
-    if (!(bc instanceof PrefBidContainer)) {
+    if (!(bc instanceof PrefTradeStepResult)) {
       throw new IllegalStateException("bid container must be PrefBidContainer");
     }
-    prefTradeStep((PrefDeal)d, (PrefBidContainer)bc);
+    prefTradeStep((PrefDeal)d, (PrefTradeStepResult)bc);
   }
 
   private final static Random r = new Random();
@@ -47,7 +47,7 @@ public class DumbPlayer implements IPlayer {
    * @param d
    * @param bc
    */
-  private void prefTradeStep(PrefDeal d, PrefBidContainer bc) {
+  private void prefTradeStep(PrefDeal d, PrefTradeStepResult bc) {
     boolean doPass = r.nextBoolean();
     Bid bid;
     if (doPass) {
