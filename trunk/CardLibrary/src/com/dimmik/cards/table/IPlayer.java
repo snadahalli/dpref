@@ -6,6 +6,6 @@ public interface IPlayer {
 
   Card nextCard(Seat seat, Move move);
 
-  void tradeStep(Deal d, IBidContainer bc);
+  void tradeStep(Deal d, ITradeStepResult bc);
 
 }

@@ -47,7 +47,7 @@ public class Seat {
     return name;
   }
 
-  public void tradeStep(Deal d, IBidContainer bc) {
+  public void tradeStep(Deal d, ITradeStepResult bc) {
     player.tradeStep(d, bc);
   }
   
