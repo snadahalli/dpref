@@ -122,7 +122,7 @@ public class PrefDeal extends Deal {
     List<Seat> ordered = getMoveOrderedSeats();
     int bidderIdx = 0;
     while (!contract.isTradeFinished()) {
-      PrefBidContainer prefBC = new PrefBidContainer();
+      PrefTradeStepResult prefBC = new PrefTradeStepResult();
       Seat bidder = ordered.get(bidderIdx);
       if (!contract.seatHasBiddenPass(bidder)) {
         bidder.tradeStep(this, prefBC);

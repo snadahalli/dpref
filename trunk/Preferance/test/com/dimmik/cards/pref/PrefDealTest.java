@@ -1,30 +1,18 @@
 package com.dimmik.cards.pref;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import junit.framework.TestCase;
 
-import com.dimmik.cards.prefplayers.DumbPlayer;
 import com.dimmik.cards.sheets.card.Card;
 import com.dimmik.cards.table.Move;
 import com.dimmik.cards.table.Seat;
 
 public class PrefDealTest extends TestCase {
-  @SuppressWarnings("serial")
   public void testDeal() throws Throwable {
-    List<Seat> seats = new ArrayList<Seat>() {
-      {
-        add(new Seat("West"));
-        add(new Seat("North"));
-        add(new Seat("East"));
-      }
-    };
-    for (Seat s : seats) {
-      s.setPlayer(new DumbPlayer());
-    }
+    List<Seat> seats = PrefTestUtility.getSeats();
     PrefDeal d = new PrefDeal("test", seats, 0);
     d.process();
     System.out.println("deal: " + d);
