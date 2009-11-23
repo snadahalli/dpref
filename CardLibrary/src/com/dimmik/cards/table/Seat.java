@@ -47,8 +47,8 @@ public class Seat {
     return name;
   }
 
-  public void tradeStep(Deal d, ITradeStepResult bc) {
-    player.tradeStep(d, bc);
+  public void tradeStep(Deal d, ITradeStepInfo bc) {
+    player.tradeStep(this, d, bc);
   }
   
 }
