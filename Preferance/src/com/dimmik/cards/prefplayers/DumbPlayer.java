@@ -90,12 +90,13 @@ public class DumbPlayer implements IPlayer {
   }
 
   protected void setBid(Seat seat, PrefDeal d, PrefTradeStepInfo bc) {
-    boolean doPass = r.nextBoolean();
+    int prob = r.nextInt(100);
+    boolean doPass = prob > 80;
     Bid bid;
     if (doPass) {
       bid = Bid.PASS;
     } else {
-      bid = d.getContract().getMinAvailableBid();
+      bid = d.getContract().getMinAvailableBid(seat);
     }
     bc.setBid(bid);
   }

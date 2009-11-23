@@ -132,7 +132,7 @@ public class PrefDeal extends Deal {
       if (!contract.seatHasBiddenPass(bidder)) {
         bidder.tradeStep(this, prefTradeStepInfo);
         Bid bid = prefTradeStepInfo.getBid();
-        if (!contract.isBidCorrect(bid)) {
+        if (!contract.isBidCorrect(bidder, bid)) {
           throw new DealException("bid " + bid + " is not acceptable");
         }
 

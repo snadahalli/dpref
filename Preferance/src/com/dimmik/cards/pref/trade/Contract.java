@@ -38,6 +38,7 @@ public class Contract {
   private final Map<Bid, Integer> bidsValue = new HashMap<Bid, Integer>();
 
   private final Set<Seat> seatsPassed = new HashSet<Seat>();
+  private Seat miserBiden = null;
 
   private void initAllBids() {
     for (Rank r : ranksBeforeMiser) {
@@ -58,7 +59,7 @@ public class Contract {
     }
   }
 
-  public boolean isBidCorrect(Bid bid) {
+  public boolean isBidCorrect(Seat seat, Bid bid) {
     if (bid == Bid.PASS) {
       // pass always acceptable
       return true;
@@ -70,6 +71,12 @@ public class Contract {
     if (lastNonPassBid == null) {
       // first valuable bid
       return true;
+    }
+    if (miserBiden != null && miserBiden.equals(seat)){
+      // if said miser - only pass then
+      if (bid != Bid.PASS){
+        return false;
+      }
     }
     int lastNonPassValue = bidsValue.get(lastNonPassBid.bid);
     int bidValue = bidsValue.get(bid);
@@ -86,8 +93,15 @@ public class Contract {
     if (seatsPassed.contains(bidder)) {
       throw new IllegalStateException("seat " + bidder + " has already passed");
     }
-    if (!isBidCorrect(bid)) {
+    if (!isBidCorrect(bidder, bid)) {
       throw new IllegalStateException("bid " + bid + " is not correct");
+    }
+    if (miserBiden != null){
+      if (miserBiden.equals(bidder)){
+        if (bid != Bid.PASS) {
+          throw new IllegalStateException("bidder " + bidder + " has already bidden MISER");
+        }
+      }
     }
     SeatBid sb = new SeatBid(bidder, bid);
     lastBid.put(bidder, bid);
@@ -96,6 +110,9 @@ public class Contract {
       lastNonPassBid = sb;
     } else {
       seatsPassed.add(bidder);
+    }
+    if (bid == Bid.MISER) {
+      miserBiden = bidder;
     }
   }
 
@@ -156,9 +173,9 @@ public class Contract {
     }
   }
 
-  public Bid getMinAvailableBid() {
+  public Bid getMinAvailableBid(Seat seat) {
     for (Bid bid : allBids) {
-      if (isBidCorrect(bid)) {
+      if (isBidCorrect(seat, bid)) {
         return bid;
       }
     }
@@ -211,5 +228,21 @@ public class Contract {
       }
     }
     return Bid.PASS;
+  }
+  @Override
+  public String toString(){
+    StringBuffer sb = new StringBuffer();
+    int i = 0;
+    for (SeatBid seatBid : seatBids) {
+      sb.append(i+1).append(".").append(seatBid.seat);
+      sb.append("->").append(seatBid.bid);
+      sb.append("\n");
+      i++;
+    }
+    if (isTradeFinished()){
+      sb.append("trade is finished\n");
+      sb.append("winner: ").append(getWinnerSeat()).append(" -> ").append(getWinnerBid());
+    }
+    return sb.toString();
   }
 }
