@@ -40,6 +40,7 @@ public class PrefGame extends Game {
 
   @Override
   protected void dealPostProcess(Deal deal) {
+    // choose next player
     firstDealSeatNumber++;
     if (firstDealSeatNumber >= seats.size()) {
       firstDealSeatNumber = 0;
