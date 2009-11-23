@@ -24,7 +24,7 @@ public abstract class Deal {
     }
   }
 
-  protected abstract void performTrade();
+  protected abstract void performTrade() throws DealException;
 
   protected abstract boolean isThereMoreMoves();
 

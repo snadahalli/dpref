@@ -2,6 +2,13 @@ package com.dimmik.cards.table;
 
 public class GameException extends Exception {
 
+  public GameException(String msg) {
+    super(msg);
+  }
+  public GameException(){
+    
+  }
+
   /**
      * 
      */
