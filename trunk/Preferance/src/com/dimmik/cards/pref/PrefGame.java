@@ -23,7 +23,7 @@ public class PrefGame extends Game {
 
   @Override
   protected boolean gameMakesSense() {
-    // TODO change to real decision if the game makes sense.
+    // TODO change to real decision if the game makes sense - based on score.
     return getDeals().size() < maxDeals;
   }
 
@@ -34,7 +34,6 @@ public class PrefGame extends Game {
 
   @Override
   protected void updateGameStatus(Deal deal) {
-    // TODO Auto-generated method stub
     // TODO may be makes sense to move it into dealPostProcess
   }
 
