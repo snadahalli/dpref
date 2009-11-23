@@ -6,7 +6,7 @@ import java.util.List;
 import com.dimmik.cards.pref.PrefDeal;
 import com.dimmik.cards.table.Deal;
 
-// TODO as for now - just max deals.
+// TODO as for now - just max deals, no real score update.
 public class Score {
   private final  List<Deal> deals = new ArrayList<Deal>();
   

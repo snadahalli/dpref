@@ -72,14 +72,14 @@ public class Contract {
       // first valuable bid
       return true;
     }
-    if (miserBiden != null && miserBiden.equals(seat)){
+    if (miserBiden != null && miserBiden.equals(seat)) {
       // if said miser - only pass then
-      if (bid != Bid.PASS){
+      if (bid != Bid.PASS) {
         return false;
       }
     }
-    int lastNonPassValue = bidsValue.get(lastNonPassBid.bid);
-    int bidValue = bidsValue.get(bid);
+    int lastNonPassValue = bidsValue.get(lastNonPassBid.bid).intValue();
+    int bidValue = bidsValue.get(bid).intValue();
     if (bidValue > lastNonPassValue) {
       return true;
     }
@@ -87,22 +87,11 @@ public class Contract {
   }
 
   public void addBid(Seat bidder, Bid bid) {
-    if (isTradeFinished()) {
-      throw new IllegalStateException("trade is finished - can not add bids");
-    }
-    if (seatsPassed.contains(bidder)) {
-      throw new IllegalStateException("seat " + bidder + " has already passed");
-    }
-    if (!isBidCorrect(bidder, bid)) {
-      throw new IllegalStateException("bid " + bid + " is not correct");
-    }
-    if (miserBiden != null){
-      if (miserBiden.equals(bidder)){
-        if (bid != Bid.PASS) {
-          throw new IllegalStateException("bidder " + bidder + " has already bidden MISER");
-        }
-      }
-    }
+    checkBidIsPissible(bidder, bid);
+    storeBid(bidder, bid);
+  }
+
+  private void storeBid(Seat bidder, Bid bid) {
     SeatBid sb = new SeatBid(bidder, bid);
     lastBid.put(bidder, bid);
     seatBids.add(sb);
@@ -113,6 +102,26 @@ public class Contract {
     }
     if (bid == Bid.MISER) {
       miserBiden = bidder;
+    }
+  }
+
+  private void checkBidIsPissible(Seat bidder, Bid bid) {
+    if (isTradeFinished()) {
+      throw new IllegalStateException("trade is finished - can not add bids");
+    }
+    if (seatsPassed.contains(bidder)) {
+      throw new IllegalStateException("seat " + bidder + " has already passed");
+    }
+    if (!isBidCorrect(bidder, bid)) {
+      throw new IllegalStateException("bid " + bid + " is not correct");
+    }
+    if (miserBiden != null) {
+      if (miserBiden.equals(bidder)) {
+        if (bid != Bid.PASS) {
+          throw new IllegalStateException("bidder " + bidder
+              + " has already bidden MISER");
+        }
+      }
     }
   }
 
@@ -142,14 +151,15 @@ public class Contract {
 
   public boolean isTradeFinished() {
     // check if all seats have bidden
-    int countPassed = 0;
     for (Seat seat : seats) {
       if (lastBid.get(seat) == null) {
         // at least one has not bidden
         return false;
       }
     }
-    // everyone has bidden
+
+    // everyone has biden
+    int countPassed = 0;
     for (Seat seat : seats) {
       Bid b = lastBid.get(seat);
       if (b.equals(Bid.PASS)) {
@@ -163,16 +173,6 @@ public class Contract {
     return false;
   }
 
-  private final static class SeatBid {
-    private final Seat seat;
-    private final Bid bid;
-
-    private SeatBid(Seat s, Bid b) {
-      seat = s;
-      bid = b;
-    }
-  }
-
   public Bid getMinAvailableBid(Seat seat) {
     for (Bid bid : allBids) {
       if (isBidCorrect(seat, bid)) {
@@ -182,7 +182,7 @@ public class Contract {
     return Bid.PASS;
   }
 
-  public boolean seatHasBiddenPass(Seat bidder) {
+  public boolean seatHasBidenPass(Seat bidder) {
     return Bid.PASS.equals(lastBid.get(bidder));
   }
 
@@ -204,17 +204,18 @@ public class Contract {
     if (getWinnerBid() == null) { // all pass - only pass acceptable
       return (gameBid == Bid.PASS);
     }
-    if (getWinnerBid() == Bid.MISER) { // miser - only miser
+    if (getWinnerBid() == Bid.MISER) { // miser - only miser game
       return (gameBid == Bid.MISER);
+    }
+    if (!bidsValue.containsKey(gameBid)) {
+      return false;
     }
 
     Bid winnerBid = getWinnerBid();
     int winnerBidValue = bidsValue.get(winnerBid);
     int gameBidValue = bidsValue.get(gameBid);
-    return ((gameBidValue >= winnerBidValue) && (gameBid != Bid.MISER)); // anything
-    // higher
-    // but
-    // miser
+    // anything higher but miser
+    return ((gameBidValue >= winnerBidValue) && (gameBid != Bid.MISER));
   }
 
   public Bid getGame() {
@@ -229,20 +230,39 @@ public class Contract {
     }
     return Bid.PASS;
   }
+
   @Override
-  public String toString(){
+  public String toString() {
     StringBuffer sb = new StringBuffer();
     int i = 0;
     for (SeatBid seatBid : seatBids) {
-      sb.append(i+1).append(".").append(seatBid.seat);
+      sb.append(i + 1).append(".").append(seatBid.seat);
       sb.append("->").append(seatBid.bid);
       sb.append("\n");
       i++;
     }
-    if (isTradeFinished()){
+    if (isTradeFinished()) {
       sb.append("trade is finished\n");
-      sb.append("winner: ").append(getWinnerSeat()).append(" -> ").append(getWinnerBid());
+      sb.append("winner: ").append(getWinnerSeat()).append(" -> ").append(
+          getWinnerBid());
     }
     return sb.toString();
   }
+
+  /**
+   * stores seat and bid.
+   * 
+   * @author dkandrievsky
+   * 
+   */
+  private final static class SeatBid {
+    private final Seat seat;
+    private final Bid bid;
+
+    private SeatBid(Seat s, Bid b) {
+      seat = s;
+      bid = b;
+    }
+  }
+
 }

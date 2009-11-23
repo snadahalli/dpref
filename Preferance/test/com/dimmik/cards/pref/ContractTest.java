@@ -11,7 +11,7 @@ import com.dimmik.cards.sheets.card.Suit;
 import com.dimmik.cards.table.Seat;
 
 public class ContractTest extends TestCase {
-  
+
   public void testPrimitiveContract() {
     System.out.println("testPrimitiveContract");
     List<Seat> seats = PrefTestUtility.getSeats();
@@ -43,9 +43,9 @@ public class ContractTest extends TestCase {
     boolean bidOk;
     c = new Contract(seats);
     c.addBid(w, Bid.MISER);
-    bidOk = c.isBidCorrect(w, Bid.valueOf(Suit.SPADES, Rank.EIGHT));
+    bidOk = c.isBidCorrect(n, Bid.valueOf(Suit.SPADES, Rank.EIGHT));
     assertFalse(bidOk);
-    bidOk = c.isBidCorrect(w, Bid.valueOf(Suit.SPADES, Rank.NINE));
+    bidOk = c.isBidCorrect(n, Bid.valueOf(Suit.SPADES, Rank.NINE));
     assertTrue(bidOk);
     c.addBid(n, Bid.valueOf(Suit.SPADES, Rank.NINE));
     c.addBid(e, Bid.PASS);
@@ -67,22 +67,21 @@ public class ContractTest extends TestCase {
       bidExcepted = true;
     }
     assertTrue(bidExcepted);
-    
-    
+
     System.out.println("winner: " + c.getWinnerSeat() + " bid: "
         + c.getWinnerBid());
-    
+
     c = new Contract(seats);
     boolean excepted = false;
     c.addBid(w, Bid.valueOf(Suit.SPADES, Rank.NINE));
     try {
-    c.addBid(n, Bid.valueOf(Suit.SPADES, Rank.SIX));
+      c.addBid(n, Bid.valueOf(Suit.SPADES, Rank.SIX));
     } catch (IllegalStateException ex) {
       System.out.println("test addBid exception ex: " + ex);
       excepted = true;
     }
     assertTrue(excepted);
-    
+
   }
 
   public void testSampleTrade() {
@@ -91,7 +90,7 @@ public class ContractTest extends TestCase {
     Seat w = seats.get(0);
     Seat n = seats.get(1);
     Seat e = seats.get(2);
-    
+
     Contract c;
     c = new Contract(seats);
     c.addBid(w, Bid.valueOf(Suit.SPADES, Rank.SIX));
@@ -109,8 +108,8 @@ public class ContractTest extends TestCase {
     System.out.println("winner: " + c.getWinnerSeat() + " bid: "
         + c.getWinnerBid());
   }
-  
-  public void testAllPass(){
+
+  public void testAllPass() {
     System.out.println("testAllPass");
     List<Seat> seats = PrefTestUtility.getSeats();
     Seat w = seats.get(0);
@@ -126,10 +125,10 @@ public class ContractTest extends TestCase {
 
     assertNull(c.getWinnerBid());
     assertNull(c.getWinnerSeat());
-    
+
   }
 
-  public void testMiser(){
+  public void testMiser() {
     System.out.println("testMiser");
     List<Seat> seats = PrefTestUtility.getSeats();
     Seat w = seats.get(0);
@@ -141,10 +140,18 @@ public class ContractTest extends TestCase {
     c.addBid(w, Bid.MISER);
     c.addBid(n, Bid.PASS);
     c.addBid(e, Bid.PASS);
-    
+
     assertEquals(w, c.getWinnerSeat());
     assertEquals(Bid.MISER, c.getWinnerBid());
     System.out.println("winner: " + c.getWinnerSeat() + " bid: "
         + c.getWinnerBid());
   }
+
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+    System.out.println();
+    System.out.println(this.getClass());
+  }
+
 }
