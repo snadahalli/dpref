@@ -21,14 +21,14 @@ public class ContractTest extends TestCase {
     assertEquals(26, c.getAllBids().size());
 
     boolean bidOk;
-    bidOk = c.isBidCorrect(Bid.valueOf(Suit.HEARTS, Rank.ACE));
+    bidOk = c.isBidCorrect(w, Bid.valueOf(Suit.HEARTS, Rank.ACE));
     assertFalse(bidOk);
-    bidOk = c.isBidCorrect(Bid.valueOf(Suit.DIAMONDS, Rank.SEVEN));
+    bidOk = c.isBidCorrect(w, Bid.valueOf(Suit.DIAMONDS, Rank.SEVEN));
     assertTrue(bidOk);
     c.addBid(w, Bid.valueOf(Suit.DIAMONDS, Rank.SEVEN));
-    bidOk = c.isBidCorrect(Bid.valueOf(Suit.CLUBS, Rank.SEVEN));
+    bidOk = c.isBidCorrect(w, Bid.valueOf(Suit.CLUBS, Rank.SEVEN));
     assertFalse(bidOk);
-    bidOk = c.isBidCorrect(Bid.MISER);
+    bidOk = c.isBidCorrect(w, Bid.MISER);
     assertTrue(bidOk);
   }
 
@@ -43,9 +43,9 @@ public class ContractTest extends TestCase {
     boolean bidOk;
     c = new Contract(seats);
     c.addBid(w, Bid.MISER);
-    bidOk = c.isBidCorrect(Bid.valueOf(Suit.SPADES, Rank.EIGHT));
+    bidOk = c.isBidCorrect(w, Bid.valueOf(Suit.SPADES, Rank.EIGHT));
     assertFalse(bidOk);
-    bidOk = c.isBidCorrect(Bid.valueOf(Suit.SPADES, Rank.NINE));
+    bidOk = c.isBidCorrect(w, Bid.valueOf(Suit.SPADES, Rank.NINE));
     assertTrue(bidOk);
     c.addBid(n, Bid.valueOf(Suit.SPADES, Rank.NINE));
     c.addBid(e, Bid.PASS);
