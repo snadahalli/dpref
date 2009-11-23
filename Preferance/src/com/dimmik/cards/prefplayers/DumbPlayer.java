@@ -91,7 +91,7 @@ public class DumbPlayer implements IPlayer {
 
   protected void setBid(Seat seat, PrefDeal d, PrefTradeStepInfo bc) {
     int prob = r.nextInt(100);
-    boolean doPass = prob > 80;
+    boolean doPass = prob > 10;
     Bid bid;
     if (doPass) {
       bid = Bid.PASS;
