@@ -1,6 +1,5 @@
 package com.dimmik.cards.table;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,4 +47,8 @@ public class Seat {
     return name;
   }
 
+  public void tradeStep(Deal d, IBidContainer bc) {
+    player.tradeStep(d, bc);
+  }
+  
 }
