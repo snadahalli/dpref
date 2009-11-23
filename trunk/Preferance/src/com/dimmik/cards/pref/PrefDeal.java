@@ -17,7 +17,6 @@ import com.dimmik.cards.table.DealException;
 import com.dimmik.cards.table.Move;
 import com.dimmik.cards.table.Seat;
 
-
 // TODO refactor - not readable.
 // TODO replace illegalstateexception with DealException where possible 
 public class PrefDeal extends Deal {
@@ -146,40 +145,41 @@ public class PrefDeal extends Deal {
     if (contract.getWinnerSeat() == null) {
       // All pass
       contract.setGame(Bid.PASS);
-    }
-    Seat winner = contract.getWinnerSeat();
-    // give side cards
-    PrefTradeStepInfo stInfo = new PrefTradeStepInfo(
-        PrefTradeStep.GIVE_SIDE_CARDS);
-    // add 2 cards
-    winner.addCard(sideCards.get(0));
-    winner.addCard(sideCards.get(1));
-    winner.tradeStep(this, stInfo); // do something it wants. Analyse, decide
-    // what to do next
+    } else { // add real game
+      Seat winner = contract.getWinnerSeat();
+      // give side cards
+      PrefTradeStepInfo stInfo = new PrefTradeStepInfo(
+          PrefTradeStep.GIVE_SIDE_CARDS);
+      // add 2 cards
+      winner.addCard(sideCards.get(0));
+      winner.addCard(sideCards.get(1));
+      winner.tradeStep(this, stInfo); // do something it wants. Analyse, decide
+      // what to do next
 
-    // get thrown cards
-    stInfo = new PrefTradeStepInfo(PrefTradeStep.GET_THROWN_CARDS);
-    winner.tradeStep(this, stInfo);
-    if (stInfo.getFirstThrown() == null || stInfo.getSecondThrown() == null) {
-      throw new DealException("should be 2 cards thrown");
-    }
-    // check that cards are really thrown and so on
-    if (winner.getCards().size() != 10) {
-      throw new DealException("winner should keep 10 cards");
-    }
-    if (winner.getCards().contains(stInfo.getFirstThrown())
-        || winner.getCards().contains(stInfo.getSecondThrown())) {
-      throw new DealException(
-          "winner should really throw two cards (not keep them)");
-    }
-    thrownCards = new ArrayList<Card>();
-    thrownCards.add(stInfo.getFirstThrown());
-    thrownCards.add(stInfo.getSecondThrown());
+      // get thrown cards
+      stInfo = new PrefTradeStepInfo(PrefTradeStep.GET_THROWN_CARDS);
+      winner.tradeStep(this, stInfo);
+      if (stInfo.getFirstThrown() == null || stInfo.getSecondThrown() == null) {
+        throw new DealException("should be 2 cards thrown");
+      }
+      // check that cards are really thrown and so on
+      if (winner.getCards().size() != 10) {
+        throw new DealException("winner should keep 10 cards");
+      }
+      if (winner.getCards().contains(stInfo.getFirstThrown())
+          || winner.getCards().contains(stInfo.getSecondThrown())) {
+        throw new DealException(
+            "winner should really throw two cards (not keep them)");
+      }
+      thrownCards = new ArrayList<Card>();
+      thrownCards.add(stInfo.getFirstThrown());
+      thrownCards.add(stInfo.getSecondThrown());
 
-    // set game
-    stInfo = new PrefTradeStepInfo(PrefTradeStep.SET_GAME);
-    winner.tradeStep(this, stInfo);
-    contract.setGame(stInfo.getGame());
+      // set game
+      stInfo = new PrefTradeStepInfo(PrefTradeStep.SET_GAME);
+      winner.tradeStep(this, stInfo);
+      contract.setGame(stInfo.getGame());
+    }
   }
 
   private List<Seat> getMoveOrderedSeats() {

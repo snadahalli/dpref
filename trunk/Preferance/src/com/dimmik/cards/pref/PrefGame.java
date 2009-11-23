@@ -2,29 +2,31 @@ package com.dimmik.cards.pref;
 
 import java.util.List;
 
+import com.dimmik.cards.pref.score.Score;
 import com.dimmik.cards.table.Deal;
 import com.dimmik.cards.table.Game;
 import com.dimmik.cards.table.Seat;
 
-public class PrefGame extends Game {
 
-  private final int maxDeals = 10;
+public class PrefGame extends Game {
 
   private final List<Seat> seats;
 
   private int firstDealSeatNumber = 0;
 
-  public PrefGame(List<Seat> s) {
+  private final Score score;
+  
+  public PrefGame(List<Seat> s, Score sc) {
     seats = s;
     if (seats.size() != 3) {
       throw new IllegalArgumentException("seat size should be 3");
     }
+    score = sc;
   }
 
   @Override
   protected boolean gameMakesSense() {
-    // TODO change to real decision if the game makes sense - based on score.
-    return getDeals().size() < maxDeals;
+    return !score.isGameFinished();
   }
 
   @Override
@@ -34,7 +36,10 @@ public class PrefGame extends Game {
 
   @Override
   protected void updateGameStatus(Deal deal) {
-    // TODO may be makes sense to move it into dealPostProcess
+    if (!(deal instanceof PrefDeal)) {
+      throw new IllegalStateException("deal must be PrefDeal");
+    }
+    score.update((PrefDeal)deal);
   }
 
   @Override
