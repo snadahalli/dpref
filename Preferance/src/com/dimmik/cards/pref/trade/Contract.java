@@ -11,7 +11,6 @@ import com.dimmik.cards.sheets.card.Rank;
 import com.dimmik.cards.sheets.card.Suit;
 import com.dimmik.cards.table.Seat;
 
-// TODO implement setting actual game
 public class Contract {
 
   private final List<Seat> seats;
@@ -20,6 +19,8 @@ public class Contract {
 
   private SeatBid lastNonPassBid = null;
 
+  private Bid game;
+
   public Contract(List<Seat> ss) {
     seats = ss;
     initAllBids();
@@ -27,18 +28,18 @@ public class Contract {
 
   private final static Suit[] suitArray = new Suit[] { Suit.SPADES, Suit.CLUBS,
       Suit.DIAMONDS, Suit.HEARTS, Suit.noSuit() };
-  private static Rank[] ranksBeforeMiser = new Rank[] { Rank.SIX,
-      Rank.SEVEN, Rank.EIGHT };
-  private static Rank[] ranksAfterMiser = new Rank[] { Rank.NINE,
-      Rank.TEN };
+  private static Rank[] ranksBeforeMiser = new Rank[] { Rank.SIX, Rank.SEVEN,
+      Rank.EIGHT };
+  private static Rank[] ranksAfterMiser = new Rank[] { Rank.NINE, Rank.TEN };
 
-  private final List<Bid> allBids = new ArrayList<Bid>(); // 5 suits, 5 ranks and miser
+  private final List<Bid> allBids = new ArrayList<Bid>(); // 5 suits, 5 ranks
+  // and miser
 
   private final Map<Bid, Integer> bidsValue = new HashMap<Bid, Integer>();
-  
+
   private final Set<Seat> seatsPassed = new HashSet<Seat>();
-  
-  private void initAllBids(){
+
+  private void initAllBids() {
     for (Rank r : ranksBeforeMiser) {
       for (Suit s : suitArray) {
         allBids.add(Bid.valueOf(s, r));
@@ -51,9 +52,9 @@ public class Contract {
       }
     }
     int val = 0;
-    for (Bid b : allBids){
+    for (Bid b : allBids) {
       bidsValue.put(b, Integer.valueOf(val));
-      val ++;
+      val++;
     }
   }
 
@@ -62,28 +63,31 @@ public class Contract {
       // pass always acceptable
       return true;
     }
-    if (!bidsValue.containsKey(bid)){
+    if (!bidsValue.containsKey(bid)) {
       // strange bid, out of all available
       return false;
     }
-    if (lastNonPassBid == null){
+    if (lastNonPassBid == null) {
       // first valuable bid
       return true;
     }
     int lastNonPassValue = bidsValue.get(lastNonPassBid.bid);
     int bidValue = bidsValue.get(bid);
-    if (bidValue > lastNonPassValue){
+    if (bidValue > lastNonPassValue) {
       return true;
     }
     return false;
   }
 
   public void addBid(Seat bidder, Bid bid) {
-    if (isTradeFinished()){
+    if (isTradeFinished()) {
       throw new IllegalStateException("trade is finished - can not add bids");
     }
     if (seatsPassed.contains(bidder)) {
       throw new IllegalStateException("seat " + bidder + " has already passed");
+    }
+    if (!isBidCorrect(bid)) {
+      throw new IllegalStateException("bid " + bid + " is not correct");
     }
     SeatBid sb = new SeatBid(bidder, bid);
     lastBid.put(bidder, bid);
@@ -153,8 +157,12 @@ public class Contract {
   }
 
   public Bid getMinAvailableBid() {
-    // TODO Auto-generated method stub
-    return null;
+    for (Bid bid : allBids) {
+      if (isBidCorrect(bid)) {
+        return bid;
+      }
+    }
+    return Bid.PASS;
   }
 
   public boolean seatHasBiddenPass(Seat bidder) {
@@ -163,5 +171,45 @@ public class Contract {
 
   public List<Bid> getAllBids() {
     return allBids;
+  }
+
+  public void setGame(Bid bid) {
+    if (!isGameAcceptable(bid)) {
+      throw new IllegalStateException("you can not order " + bid);
+    }
+    game = bid;
+  }
+
+  public boolean isGameAcceptable(Bid gameBid) {
+    if (!isTradeFinished()) {
+      return false;
+    }
+    if (getWinnerBid() == null) { // all pass - only pass acceptable
+      return (gameBid == Bid.PASS);
+    }
+    if (getWinnerBid() == Bid.MISER) { // miser - only miser
+      return (gameBid == Bid.MISER);
+    }
+
+    Bid winnerBid = getWinnerBid();
+    int winnerBidValue = bidsValue.get(winnerBid);
+    int gameBidValue = bidsValue.get(gameBid);
+    return ((gameBidValue >= winnerBidValue) && (gameBid != Bid.MISER)); // anything
+    // higher
+    // but
+    // miser
+  }
+
+  public Bid getGame() {
+    return game;
+  }
+
+  public Bid getFirstAvailableGame() {
+    for (Bid bid : allBids) {
+      if (isGameAcceptable(bid)) {
+        return bid;
+      }
+    }
+    return Bid.PASS;
   }
 }
