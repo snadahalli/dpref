@@ -5,12 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.dimmik.cards.pref.trade.Bid;
+import com.dimmik.cards.pref.trade.Contract;
 import com.dimmik.cards.sheets.card.Card;
 import com.dimmik.cards.sheets.card.Suit;
 import com.dimmik.cards.sheets.deck.CardDeck;
 import com.dimmik.cards.sheets.deck.ICardDeck;
 import com.dimmik.cards.sheets.deck.PrefCardInitStrategy;
 import com.dimmik.cards.table.Deal;
+import com.dimmik.cards.table.DealException;
 import com.dimmik.cards.table.Move;
 import com.dimmik.cards.table.Seat;
 
@@ -24,14 +27,17 @@ public class PrefDeal extends Deal {
 
   private final Map<Seat, List<Move>> tricks = new HashMap<Seat, List<Move>>();
 
+  private final Contract contract;
+
   public PrefDeal(String name, List<Seat> seats, int firstMove) {
     super(name);
     this.seats = seats;
     firstMoveSeatIdx = firstMove;
     currentMove = firstMoveSeatIdx;
-    for (Seat seat : seats){
+    for (Seat seat : seats) {
       tricks.put(seat, new ArrayList<Move>());
     }
+    contract = newContract(seats);
   }
 
   @Override
@@ -112,12 +118,53 @@ public class PrefDeal extends Deal {
   }
 
   @Override
-  protected void performTrade() {
-    // TODO perform trade, yeah
-    // Decide what will be trump
-    // and so on
-    // While makes sense - ask seats for bid.
-    // 
-    
+  protected void performTrade() throws DealException {
+    List<Seat> ordered = getMoveOrderedSeats();
+    int bidderIdx = 0;
+    while (!contract.isTradeFinished()) {
+      PrefBidContainer prefBC = new PrefBidContainer();
+      Seat bidder = ordered.get(bidderIdx);
+      if (!contract.seatHasBiddenPass(bidder)) {
+        bidder.tradeStep(this, prefBC);
+        Bid bid = prefBC.getBid();
+        if (!getContract().isBidCorrect(bid)) {
+          throw new DealException("bid " + bid + " is not acceptable");
+        }
+        // TODO may be move tradeFinished to contract
+        getContract().addBid(bidder, bid);
+      }
+      bidderIdx++;
+      if (bidderIdx >= ordered.size()) {
+        bidderIdx = 0;
+      }
+    }
+    // TODO well, winner has contract.
+    // now - give him sideCards, get from him thrownCards and ask for the game
+  }
+
+  private List<Seat> getMoveOrderedSeats() {
+    List<Seat> ordered;
+    ordered = new ArrayList<Seat>();
+    for (int i = currentMove; i < seats.size(); i++) {
+      ordered.add(seats.get(i));
+    }
+    for (int i = 0; i < currentMove; i++) {
+      ordered.add(seats.get(i));
+    }
+    return ordered;
+  }
+
+  /**
+   * depends on current game status. For example, for 2nd 'all-pass' game at
+   * least 8 spades contract available
+   * 
+   * @return new Contract instance
+   */
+  private Contract newContract(List<Seat> ss) {
+    return new Contract(ss);
+  }
+
+  public Contract getContract() {
+    return contract;
   }
 }
