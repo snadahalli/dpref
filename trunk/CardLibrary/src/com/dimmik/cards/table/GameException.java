@@ -1,5 +1,10 @@
 package com.dimmik.cards.table;
 
+/**
+ * something went wrong in game
+ * @author dkandrievsky
+ *
+ */
 public class GameException extends Exception {
 
   public GameException(String msg) {
