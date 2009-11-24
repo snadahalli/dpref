@@ -9,6 +9,7 @@ import java.util.Set;
 
 import com.dimmik.cards.sheets.card.Rank;
 import com.dimmik.cards.sheets.card.Suit;
+import com.dimmik.cards.table.DealException;
 import com.dimmik.cards.table.Seat;
 
 public class Contract {
@@ -86,8 +87,8 @@ public class Contract {
     return false;
   }
 
-  public void addBid(Seat bidder, Bid bid) {
-    checkBidIsPissible(bidder, bid);
+  public void addBid(Seat bidder, Bid bid) throws DealException {
+    checkBidIsPossibleAndThrowIfNot(bidder, bid);
     storeBid(bidder, bid);
   }
 
@@ -105,27 +106,27 @@ public class Contract {
     }
   }
 
-  private void checkBidIsPissible(Seat bidder, Bid bid) {
+  private void checkBidIsPossibleAndThrowIfNot(Seat bidder, Bid bid) throws DealException {
     if (isTradeFinished()) {
-      throw new IllegalStateException("trade is finished - can not add bids");
+      throw new DealException("trade is finished - can not add bids");
     }
     if (seatsPassed.contains(bidder)) {
-      throw new IllegalStateException("seat " + bidder + " has already passed");
+      throw new DealException("seat " + bidder + " has already passed");
     }
     if (!isBidCorrect(bidder, bid)) {
-      throw new IllegalStateException("bid " + bid + " is not correct");
+      throw new DealException("bid " + bid + " is not correct");
     }
     if (miserBiden != null) {
       if (miserBiden.equals(bidder)) {
         if (bid != Bid.PASS) {
-          throw new IllegalStateException("bidder " + bidder
+          throw new DealException("bidder " + bidder
               + " has already bidden MISER");
         }
       }
     }
   }
 
-  public Seat getWinnerSeat() {
+  public Seat getWinnerSeat() throws DealException {
     checkTradeFinished();
     if (lastNonPassBid == null) {
       return null;
@@ -134,7 +135,7 @@ public class Contract {
     }
   }
 
-  public Bid getWinnerBid() {
+  public Bid getWinnerBid() throws DealException {
     checkTradeFinished();
     if (lastNonPassBid == null) {
       return null;
@@ -143,9 +144,9 @@ public class Contract {
     }
   }
 
-  private void checkTradeFinished() {
+  private void checkTradeFinished() throws DealException {
     if (!isTradeFinished()) {
-      throw new IllegalStateException("trade is not finished");
+      throw new DealException("trade is not finished");
     }
   }
 
@@ -190,14 +191,14 @@ public class Contract {
     return allBids;
   }
 
-  public void setGame(Bid bid) {
+  public void setGame(Bid bid) throws DealException {
     if (!isGameAcceptable(bid)) {
       throw new IllegalStateException("you can not order " + bid);
     }
     game = bid;
   }
 
-  public boolean isGameAcceptable(Bid gameBid) {
+  public boolean isGameAcceptable(Bid gameBid) throws DealException {
     if (!isTradeFinished()) {
       return false;
     }
@@ -222,7 +223,7 @@ public class Contract {
     return game;
   }
 
-  public Bid getFirstAvailableGame() {
+  public Bid getFirstAvailableGame() throws DealException {
     for (Bid bid : allBids) {
       if (isGameAcceptable(bid)) {
         return bid;
@@ -243,8 +244,13 @@ public class Contract {
     }
     if (isTradeFinished()) {
       sb.append("trade is finished\n");
-      sb.append("winner: ").append(getWinnerSeat()).append(" -> ").append(
-          getWinnerBid());
+      try {
+        sb.append("winner: ").append(getWinnerSeat()).append(" -> ").append(
+            getWinnerBid());
+      } catch (DealException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
     }
     return sb.toString();
   }
