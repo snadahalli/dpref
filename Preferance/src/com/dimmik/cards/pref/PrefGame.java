@@ -76,5 +76,5 @@ public class PrefGame extends Game {
       firstDealSeatNumber = 0;
     }
   }
-
+  
 }

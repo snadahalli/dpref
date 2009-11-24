@@ -1,7 +1,6 @@
 package com.dimmik.cards.table;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,8 +18,8 @@ public abstract class Deal {
     while (isThereMoreMoves()) {
       Move move = createMove();
       move.process();
-      movePostProcess(move);
       moves.add(move);
+      movePostProcess(move);
     }
   }
 
@@ -38,6 +37,7 @@ public abstract class Deal {
 
   /**
    * do something after certain move
+   * called AFTER move is added to move list (available through getMoves)
    * @param move
    */
   protected abstract void movePostProcess(Move move);
@@ -46,7 +46,7 @@ public abstract class Deal {
    * create move instance
    * @return new instance of move
    */
-  protected abstract Move createMove();
+  protected abstract Move createMove() throws DealException;
 
   /**
    * serves cards to seats

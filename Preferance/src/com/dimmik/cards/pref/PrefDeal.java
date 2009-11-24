@@ -42,12 +42,12 @@ public class PrefDeal extends Deal {
   /**
    * two side cards. filled during serveCards
    */
-  private List<Card> sideCards = new ArrayList<Card>();
+  private TwoCards sideCards;
 
   /**
    * two thrown cards may be filled during trade
    */
-  private List<Card> thrownCards = new ArrayList<Card>();
+  private TwoCards thrownCards;
 
   /**
    * tricks in the deal
@@ -58,6 +58,8 @@ public class PrefDeal extends Deal {
    * contract, firmed up during trade
    */
   private final Contract contract;
+
+  private boolean allPassGame;
 
   /**
    * Initiate the deal
@@ -82,13 +84,26 @@ public class PrefDeal extends Deal {
 
   /**
    * create move instance for the next move
+   * 
+   * @throws DealException
    */
   @Override
-  protected Move createMove() {
+  protected Move createMove() throws DealException {
     Suit trump = contract.getGame().getSuit();
     // TODO seal with "all-pass" game. May be special kind of Move
-    PrefMove move = new PrefMove(seats, currentMove, trump);
-    return move;
+    if (allPassGame && getMoves().size() < 2) {
+      // for first and second move - first open side cards.
+      // firstMover - the same.
+      // for third move - usual, but firstMover the same
+      Card f = sideCards.getFirst();
+      Card s = sideCards.getSecond();
+      PrefPassMove move = new PrefPassMove(seats, currentMove, getMoves()
+          .size() == 0 ? f : s);
+      return move;
+    } else {
+      PrefMove move = new PrefMove(seats, currentMove, trump);
+      return move;
+    }
   }
 
   /**
@@ -99,8 +114,9 @@ public class PrefDeal extends Deal {
     add10Cards(seats.get(0));
     add10Cards(seats.get(1));
     add10Cards(seats.get(2));
-    sideCards.add(getDeck().getNextCard());
-    sideCards.add(getDeck().getNextCard());
+    Card fSide = deck.getNextCard();
+    Card sSide = deck.getNextCard();
+    sideCards = new TwoCards(fSide, sSide);
   }
 
   /**
@@ -122,7 +138,10 @@ public class PrefDeal extends Deal {
   protected void movePostProcess(Move move) {
     Seat winner = move.whoWon();
     addTrick(winner, move);
-    currentMove = seats.indexOf(winner);
+    // for all-pass-game first 3 moves - one seat
+    if (!allPassGame || getMoves().size() >= 3) {
+      currentMove = seats.indexOf(winner);
+    }
   }
 
   /**
@@ -182,7 +201,7 @@ public class PrefDeal extends Deal {
    * 
    * @return
    */
-  public List<Card> getSideCards() {
+  public TwoCards getSideCards() {
     return sideCards;
   }
 
@@ -191,7 +210,7 @@ public class PrefDeal extends Deal {
    * 
    * @return
    */
-  public List<Card> getThrownCards() {
+  public TwoCards getThrownCards() {
     return thrownCards;
   }
 
@@ -226,7 +245,7 @@ public class PrefDeal extends Deal {
    * @return new Contract instance
    */
   private Contract newContract(List<Seat> ss) {
-    // TODO add dependency on current game status. 
+    // TODO add dependency on current game status.
     // TODO May be on score (makes sense store it somewhere in deal).
     return new Contract(ss);
   }
@@ -248,6 +267,7 @@ public class PrefDeal extends Deal {
     determineContractWinner();
     if (contract.getWinnerSeat() == null) {
       contract.setGame(Bid.PASS);
+      isDealAllPass();
     } else { // add real game
       Seat winner = contract.getWinnerSeat();
       giveWinnerSideCards(winner);
@@ -255,6 +275,10 @@ public class PrefDeal extends Deal {
       Bid game = setGameForDeal(winner);
       contract.setGame(game);
     }
+  }
+
+  public void isDealAllPass() {
+    allPassGame = true;
   }
 
   /**
@@ -282,9 +306,9 @@ public class PrefDeal extends Deal {
     winner.tradeStep(this, stInfo);
     checkCardAreCorrectlyThrown(winner, stInfo.getFirstThrown(), stInfo
         .getSecondThrown());
-    thrownCards = new ArrayList<Card>();
-    thrownCards.add(stInfo.getFirstThrown());
-    thrownCards.add(stInfo.getSecondThrown());
+    Card f = stInfo.getFirstThrown();
+    Card s = stInfo.getSecondThrown();
+    thrownCards = new TwoCards(f, s);
   }
 
   /**
@@ -322,9 +346,10 @@ public class PrefDeal extends Deal {
     PrefTradeStepInfo stInfo = new PrefTradeStepInfo(
         PrefTradeStep.GIVE_SIDE_CARDS);
     // add 2 cards
-    winner.addCard(sideCards.get(0));
-    winner.addCard(sideCards.get(1));
-    winner.tradeStep(this, stInfo); // do anything it wants. Analyse, decide
+    winner.addCard(sideCards.getFirst());
+    winner.addCard(sideCards.getSecond());
+    // do anything it wants. Analyze, decide, ...
+    winner.tradeStep(this, stInfo);
 
     return winner;
   }
@@ -368,6 +393,24 @@ public class PrefDeal extends Deal {
       throw new DealException("bid " + bid + " is not acceptable");
     }
     return bid;
+  }
+
+  public static class TwoCards {
+    private final Card first;
+    public final Card second;
+
+    public TwoCards(Card f, Card s) {
+      first = f;
+      second = s;
+    }
+
+    public Card getFirst() {
+      return first;
+    }
+
+    public Card getSecond() {
+      return second;
+    }
   }
 
 }
