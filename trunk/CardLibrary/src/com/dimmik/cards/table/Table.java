@@ -16,4 +16,20 @@ public class Table {
     game.process();
     return game;
   }
+
+  public GameFactory getGameFactory() {
+    return gameFactory;
+  }
+
+  public void setGameFactory(GameFactory gameFactory) {
+    this.gameFactory = gameFactory;
+  }
+
+  public List<Seat> getSeats() {
+    return seats;
+  }
+
+  public void setSeats(List<Seat> seats) {
+    this.seats = seats;
+  }
 }
