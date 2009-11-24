@@ -13,7 +13,7 @@ public class PokerInitStrategy implements ICardInitStrategy {
   @Override
   public Iterable<Card> initialCards() {
     List<Card> cards = new ArrayList<Card>(32);
-    for (Suit s : Suit.values()) {
+    for (Suit s : Suit.playableSuits()) {
       for (Rank r : Rank.values()) {
         cards.add(Card.getInstance(s, r));
       }

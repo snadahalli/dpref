@@ -20,4 +20,8 @@ public enum Rank {
   public int getValue() {
     return value;
   }
+  
+  public String toString(){
+    return name;
+  }
 }

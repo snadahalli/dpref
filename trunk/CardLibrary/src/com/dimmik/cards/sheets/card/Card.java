@@ -5,6 +5,9 @@ public class Card {
   private final Rank rank;
 
   private Card(Suit s, Rank r) {
+    if (s == null || s == Suit.NO_SUIT) {
+      throw new IllegalArgumentException("suit should not be " + s);
+    }
     suit = s;
     rank = r;
   }
