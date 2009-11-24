@@ -9,7 +9,6 @@ import com.dimmik.cards.pref.trade.Bid;
 import com.dimmik.cards.pref.trade.Contract;
 import com.dimmik.cards.sheets.card.Card;
 import com.dimmik.cards.table.Deal;
-import com.dimmik.cards.table.DealException;
 import com.dimmik.cards.table.IPlayer;
 import com.dimmik.cards.table.ITradeStepInfo;
 import com.dimmik.cards.table.Move;
