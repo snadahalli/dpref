@@ -13,11 +13,8 @@ public abstract class Game {
    * deals in the game
    */
   private final List<Deal> deals = new ArrayList<Deal>();
-  /**
-   * seats in the game
-   */
-  private List<Seat> seats;
 
+  
   /**
    * game process
    * @throws GameException
@@ -33,13 +30,6 @@ public abstract class Game {
 
   }
 
-  /**
-   * 
-   * @return seats in the game
-   */
-  protected List<Seat> getSeats() {
-    return seats;
-  }
 
   /**
    * 
