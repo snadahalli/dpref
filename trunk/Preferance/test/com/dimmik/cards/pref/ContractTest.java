@@ -8,11 +8,12 @@ import com.dimmik.cards.pref.trade.Bid;
 import com.dimmik.cards.pref.trade.Contract;
 import com.dimmik.cards.sheets.card.Rank;
 import com.dimmik.cards.sheets.card.Suit;
+import com.dimmik.cards.table.DealException;
 import com.dimmik.cards.table.Seat;
 
 public class ContractTest extends TestCase {
 
-  public void testPrimitiveContract() {
+  public void testPrimitiveContract() throws Throwable {
     System.out.println("testPrimitiveContract");
     List<Seat> seats = PrefTestUtility.getSeats();
     Seat w = seats.get(0);
@@ -32,7 +33,7 @@ public class ContractTest extends TestCase {
     assertTrue(bidOk);
   }
 
-  public void testErrorneousTrade() {
+  public void testErrorneousTrade() throws Throwable {
     System.out.println("testErrorneousTrade");
     List<Seat> seats = PrefTestUtility.getSeats();
     Seat w = seats.get(0);
@@ -52,7 +53,7 @@ public class ContractTest extends TestCase {
     boolean bidExcepted = false;
     try {
       c.addBid(e, Bid.valueOf(Suit.SPADES, Rank.SIX));
-    } catch (IllegalStateException ex) {
+    } catch (DealException ex) {
       System.out.println("already pas ex: " + ex);
       bidExcepted = true;
     }
@@ -62,7 +63,7 @@ public class ContractTest extends TestCase {
     bidExcepted = false;
     try {
       c.addBid(n, Bid.valueOf(Suit.SPADES, Rank.SIX));
-    } catch (IllegalStateException ex) {
+    } catch (DealException ex) {
       System.out.println("add to finished ex: " + ex);
       bidExcepted = true;
     }
@@ -76,7 +77,7 @@ public class ContractTest extends TestCase {
     c.addBid(w, Bid.valueOf(Suit.SPADES, Rank.NINE));
     try {
       c.addBid(n, Bid.valueOf(Suit.SPADES, Rank.SIX));
-    } catch (IllegalStateException ex) {
+    } catch (DealException ex) {
       System.out.println("test addBid exception ex: " + ex);
       excepted = true;
     }
@@ -84,7 +85,7 @@ public class ContractTest extends TestCase {
 
   }
 
-  public void testSampleTrade() {
+  public void testSampleTrade() throws Throwable {
     System.out.println("testSampleTrade");
     List<Seat> seats = PrefTestUtility.getSeats();
     Seat w = seats.get(0);
@@ -109,7 +110,7 @@ public class ContractTest extends TestCase {
         + c.getWinnerBid());
   }
 
-  public void testAllPass() {
+  public void testAllPass() throws Throwable {
     System.out.println("testAllPass");
     List<Seat> seats = PrefTestUtility.getSeats();
     Seat w = seats.get(0);
@@ -128,7 +129,7 @@ public class ContractTest extends TestCase {
 
   }
 
-  public void testMiser() {
+  public void testMiser() throws Throwable {
     System.out.println("testMiser");
     List<Seat> seats = PrefTestUtility.getSeats();
     Seat w = seats.get(0);

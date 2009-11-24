@@ -9,6 +9,7 @@ import com.dimmik.cards.pref.trade.Bid;
 import com.dimmik.cards.pref.trade.Contract;
 import com.dimmik.cards.sheets.card.Card;
 import com.dimmik.cards.table.Deal;
+import com.dimmik.cards.table.DealException;
 import com.dimmik.cards.table.IPlayer;
 import com.dimmik.cards.table.ITradeStepInfo;
 import com.dimmik.cards.table.Move;
@@ -77,7 +78,13 @@ public class DumbPlayer implements IPlayer {
 
   protected void setGame(Seat seat, PrefDeal d, PrefTradeStepInfo bc) {
     Contract c = d.getContract();
-    Bid game = c.getFirstAvailableGame();
+    Bid game = Bid.PASS;
+    try {
+      game = c.getFirstAvailableGame();
+    } catch (DealException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     // think how to avoid this possibility
     //c.setGame(any game);
     bc.setGame(game);
