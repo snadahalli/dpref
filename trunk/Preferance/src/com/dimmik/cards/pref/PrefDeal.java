@@ -87,6 +87,7 @@ public class PrefDeal extends Deal {
   @Override
   protected Move createMove() {
     Suit trump = contract.getGame().getSuit();
+    // TODO seal with "all-pass" game. May be special kind of Move
     PrefMove move = new PrefMove(seats, currentMove, trump);
     return move;
   }

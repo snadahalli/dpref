@@ -10,12 +10,15 @@ import com.dimmik.cards.table.Seat;
 public class PrefMove extends Move {
 
   /**
-   * may be null.
+   * Not null
    */
   private final Suit trump;
 
   public PrefMove(List<Seat> seats, int first, Suit trump) {
     super(seats, first);
+    if (trump == null){
+      throw new IllegalArgumentException("trump can not be null");
+    }
     this.trump = trump;
   }
 
@@ -25,10 +28,32 @@ public class PrefMove extends Move {
     // 1. Decide what is turn Suit
     Suit turnSuit = turns.get(0).card.getSuit();
     // find higher trump
+    Turn higherTrumpTurn = findHigherTrump(turns);
+    if (higherTrumpTurn != null) {
+      return higherTrumpTurn.seat;
+    }
+    // otherwise find highest of move suit
+    Turn higherTurn = findHigherTurn(turns, turnSuit);
+    return higherTurn.seat;
+  }
+
+  private Turn findHigherTurn(List<Move.Turn> turns, Suit turnSuit) {
+    Turn higherTurn = turns.get(0);
+    for (Turn turn : turns) {
+      if (turn.card.getSuit() == turnSuit) {
+        if (rankHigher(turn, higherTurn)) {
+          higherTurn = turn;
+        }
+      }
+    }
+    return higherTurn;
+  }
+
+  private Turn findHigherTrump(List<Move.Turn> turns) {
     Turn higherTrumpTurn = null;
     // just find higher trump in move
     for (Turn turn : turns) {
-      if (suitIsTrump(turn.card.getSuit())) {
+      if (turn.card.getSuit() == trump) {
         if (higherTrumpTurn == null) {
           higherTrumpTurn = turn;
         } else {
@@ -38,19 +63,7 @@ public class PrefMove extends Move {
         }
       }
     }
-    if (higherTrumpTurn != null) {
-      return higherTrumpTurn.seat;
-    }
-    // otherwise find highest of move suit
-    Turn higherTurn = turns.get(0);
-    for (Turn turn : turns) {
-      if (suitsMatch(turnSuit, turn.card.getSuit())) {
-        if (rankHigher(turn, higherTurn)) {
-          higherTurn = turn;
-        }
-      }
-    }
-    return higherTurn.seat;
+    return higherTrumpTurn;
   }
 
   private boolean rankHigher(Turn turn, Turn otherTurn) {
@@ -64,46 +77,35 @@ public class PrefMove extends Move {
       return true;
     }
     Card firstCard = getCards().get(0);
-    Suit firstCardSuit = firstCard.getSuit();
+    Suit moveSuit = firstCard.getSuit();
     Suit cardSuit = card.getSuit();
 
-    if (suitsMatch(firstCardSuit, cardSuit)) {
+    if (cardSuit == moveSuit) {
       return true;
     }
     // Suits don't match
     // ensure seat has no suit
     for (Card seatCard : seat.getCards()) {
-      if (suitsMatch(firstCardSuit, seatCard.getSuit())) {
-        // he has suit
+      if (seatCard.getSuit() == moveSuit) {
+        // he has suit - should have placed it
         return false;
       }
     }
     // seat has no suit
     // trump acceptable
-    if (suitIsTrump(cardSuit)) {
+    if (cardSuit == trump) {
       return true;
     }
 
-    // check id seat has trump
+    // check if seat has trump
     for (Card seatCard : seat.getCards()) {
-      if (suitIsTrump(seatCard.getSuit())) {
-        // he has trump
+      if (seatCard.getSuit() == trump) {
+        // he has trump - should have placed it
         return false;
       }
     }
     // Seat has no trumps, no suit - any card acceptable
     return true;
-  }
-
-  private boolean suitIsTrump(Suit cardSuit) {
-    if (trump == null) {
-      return false;
-    }
-    return cardSuit.equals(trump);
-  }
-
-  private boolean suitsMatch(Suit firstCardSuit, Suit cardSuit) {
-    return cardSuit == firstCardSuit;
   }
 
   @Override
