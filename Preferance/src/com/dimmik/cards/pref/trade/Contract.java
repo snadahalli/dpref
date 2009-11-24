@@ -106,7 +106,8 @@ public class Contract {
     }
   }
 
-  private void checkBidIsPossibleAndThrowIfNot(Seat bidder, Bid bid) throws DealException {
+  private void checkBidIsPossibleAndThrowIfNot(Seat bidder, Bid bid)
+      throws DealException {
     if (isTradeFinished()) {
       throw new DealException("trade is finished - can not add bids");
     }
@@ -193,37 +194,41 @@ public class Contract {
 
   public void setGame(Bid bid) throws DealException {
     if (!isGameAcceptable(bid)) {
-      throw new IllegalStateException("you can not order " + bid);
+      throw new DealException("you can not order " + bid);
     }
     game = bid;
   }
 
-  public boolean isGameAcceptable(Bid gameBid) throws DealException {
+  public boolean isGameAcceptable(Bid gameBid) {
     if (!isTradeFinished()) {
       return false;
     }
-    if (getWinnerBid() == null) { // all pass - only pass acceptable
-      return (gameBid == Bid.PASS);
-    }
-    if (getWinnerBid() == Bid.MISER) { // miser - only miser game
-      return (gameBid == Bid.MISER);
-    }
-    if (!bidsValue.containsKey(gameBid)) {
+    try {
+      if (getWinnerBid() == null) { // all pass - only pass acceptable
+        return (gameBid == Bid.PASS);
+      }
+      if (getWinnerBid() == Bid.MISER) { // miser - only miser game
+        return (gameBid == Bid.MISER);
+      }
+      if (!bidsValue.containsKey(gameBid)) {
+        return false;
+      }
+
+      Bid winnerBid = getWinnerBid();
+      int winnerBidValue = bidsValue.get(winnerBid);
+      int gameBidValue = bidsValue.get(gameBid);
+      // anything higher but miser
+      return ((gameBidValue >= winnerBidValue) && (gameBid != Bid.MISER));
+    } catch (DealException e) {
       return false;
     }
-
-    Bid winnerBid = getWinnerBid();
-    int winnerBidValue = bidsValue.get(winnerBid);
-    int gameBidValue = bidsValue.get(gameBid);
-    // anything higher but miser
-    return ((gameBidValue >= winnerBidValue) && (gameBid != Bid.MISER));
   }
 
   public Bid getGame() {
     return game;
   }
 
-  public Bid getFirstAvailableGame() throws DealException {
+  public Bid getFirstAvailableGame() {
     for (Bid bid : allBids) {
       if (isGameAcceptable(bid)) {
         return bid;
@@ -248,8 +253,7 @@ public class Contract {
         sb.append("winner: ").append(getWinnerSeat()).append(" -> ").append(
             getWinnerBid());
       } catch (DealException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        sb.append("but something went wrong with it: " + e);
       }
     }
     return sb.toString();

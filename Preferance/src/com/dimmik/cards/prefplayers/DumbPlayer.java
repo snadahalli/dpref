@@ -25,11 +25,11 @@ import com.dimmik.cards.table.Seat;
 public class DumbPlayer implements IPlayer {
 
   private final int passProbability;
-  
+
   public DumbPlayer(int passProbability) {
     this.passProbability = passProbability;
   }
-  
+
   public Card nextCard(Seat seat, Move move) {
     for (Card card : seat.getCards()) {
       if (move.isCardAcceptable(card, seat)) {
@@ -59,7 +59,7 @@ public class DumbPlayer implements IPlayer {
    * @param d
    * @param bc
    */
-  private final void prefTradeStep(Seat seat,PrefDeal d, PrefTradeStepInfo bc) {
+  private final void prefTradeStep(Seat seat, PrefDeal d, PrefTradeStepInfo bc) {
     switch (bc.getStep()) {
     case SET_BID:
       setBid(seat, d, bc);
@@ -79,16 +79,11 @@ public class DumbPlayer implements IPlayer {
   protected void setGame(Seat seat, PrefDeal d, PrefTradeStepInfo bc) {
     Contract c = d.getContract();
     Bid game = Bid.PASS;
-    try {
-      game = c.getFirstAvailableGame();
-    } catch (DealException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    game = c.getFirstAvailableGame();
     // think how to avoid this possibility
-    //c.setGame(any game);
+    // c.setGame(any game);
     bc.setGame(game);
-    
+
   }
 
   protected void getThrownCards(Seat seat, PrefDeal d, PrefTradeStepInfo bc) {

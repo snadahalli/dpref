@@ -17,7 +17,6 @@ import com.dimmik.cards.table.DealException;
 import com.dimmik.cards.table.Move;
 import com.dimmik.cards.table.Seat;
 
-// TODO replace illegalstateexception with DealException where possible 
 public class PrefDeal extends Deal {
 
   /**
@@ -26,7 +25,7 @@ public class PrefDeal extends Deal {
   private ICardDeck deck = new CardDeck(new PrefCardInitStrategy());
 
   /**
-   * seats, praticipating the deal
+   * seats, participating the deal
    */
   private final List<Seat> seats;
 
@@ -227,8 +226,8 @@ public class PrefDeal extends Deal {
    * @return new Contract instance
    */
   private Contract newContract(List<Seat> ss) {
-    // TODO add dependency on current game status. May be on score (makes sense
-    // store it there).
+    // TODO add dependency on current game status. 
+    // TODO May be on score (makes sense store it somewhere in deal).
     return new Contract(ss);
   }
 

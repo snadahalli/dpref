@@ -8,7 +8,7 @@ import com.dimmik.cards.table.Game;
 import com.dimmik.cards.table.Seat;
 
 /*
- * TODO deal with "all pas" - minimum bid in score
+ * TODO deal with "all pass" - minimum bid in score
  * TODO score update
  * TODO document everything
  */
