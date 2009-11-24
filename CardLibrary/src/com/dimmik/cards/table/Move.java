@@ -5,6 +5,11 @@ import java.util.List;
 
 import com.dimmik.cards.sheets.card.Card;
 
+/**
+ * abstract move
+ * @author dkandrievsky
+ *
+ */
 public abstract class Move {
   private final List<Seat> seats;
   private final List<Card> cards = new ArrayList<Card>();
@@ -37,7 +42,7 @@ public abstract class Move {
         throw new CardIsNotAcceptableException(card, seat);
       }
       cards.add(card);
-      getTurns().add(new Turn(card, seat));
+      turns.add(new Turn(card, seat));
     }
   }
 

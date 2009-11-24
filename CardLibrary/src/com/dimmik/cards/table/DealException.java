@@ -1,5 +1,10 @@
 package com.dimmik.cards.table;
 
+/**
+ * something went wrong during deal
+ * @author dkandrievsky
+ *
+ */
 public class DealException extends GameException {
 
   /**

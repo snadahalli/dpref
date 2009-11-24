@@ -24,14 +24,33 @@ public abstract class Deal {
     }
   }
 
+  /**
+   * trade process
+   * @throws DealException
+   */
   protected abstract void performTrade() throws DealException;
 
+  /**
+   * 
+   * @return true if there should be at least one more move
+   */
   protected abstract boolean isThereMoreMoves();
 
+  /**
+   * do something after certain move
+   * @param move
+   */
   protected abstract void movePostProcess(Move move);
 
+  /**
+   * create move instance
+   * @return new instance of move
+   */
   protected abstract Move createMove();
 
+  /**
+   * serves cards to seats
+   */
   protected abstract void serveCards();
 
   public List<Move> getMoves() {
@@ -53,8 +72,12 @@ public abstract class Deal {
     return name;
   }
 
-  public Map<Seat, List<Move>> getTricks() {
+  /**
+   * returns tricks. 
+   * @return
+   */
+  public abstract Map<Seat, List<Move>> getTricks();/* {
     return new HashMap<Seat, List<Move>>();
-  }
+  }*/
 
 }
