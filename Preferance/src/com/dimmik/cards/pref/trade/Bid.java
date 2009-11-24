@@ -8,15 +8,15 @@ public class Bid {
   private final Rank rank;
   private final String name;
   private Bid(Suit s, Rank r){
+    if (r == null || s == null) {
+      throw new IllegalArgumentException("neither rank nor suit can be null");
+    }
     suit = s;
     rank = r;
-    if (r == null) {
-      throw new IllegalArgumentException("rank can not be null");
-    }
-    name = r + " of " + (s == null ? "NO TRUMP" : s);
+    name = r + " of " + s;
   }
   private Bid(String name) {
-    suit = null;
+    suit = Suit.NO_SUIT;
     rank = null;
     this.name = name;
   }
@@ -35,7 +35,7 @@ public class Bid {
     return rank;
   }
   public boolean isNoTrump(){
-    return suit == null;
+    return suit == Suit.NO_SUIT;
   }
   public String getName() {
     return name;

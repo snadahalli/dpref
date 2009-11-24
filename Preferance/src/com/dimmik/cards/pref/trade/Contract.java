@@ -27,7 +27,7 @@ public class Contract {
   }
 
   private final static Suit[] suitArray = new Suit[] { Suit.SPADES, Suit.CLUBS,
-      Suit.DIAMONDS, Suit.HEARTS, Suit.noSuit() };
+      Suit.DIAMONDS, Suit.HEARTS, Suit.NO_SUIT };
   private static Rank[] ranksBeforeMiser = new Rank[] { Rank.SIX, Rank.SEVEN,
       Rank.EIGHT };
   private static Rank[] ranksAfterMiser = new Rank[] { Rank.NINE, Rank.TEN };

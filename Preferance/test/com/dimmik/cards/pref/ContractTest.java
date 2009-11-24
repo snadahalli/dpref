@@ -99,12 +99,12 @@ public class ContractTest extends TestCase {
     c.addBid(w, Bid.valueOf(Suit.SPADES, Rank.SEVEN));
     c.addBid(n, Bid.PASS);
     c.addBid(e, Bid.valueOf(Suit.DIAMONDS, Rank.SEVEN));
-    c.addBid(w, Bid.valueOf(Suit.noSuit(), Rank.SEVEN));
+    c.addBid(w, Bid.valueOf(Suit.NO_SUIT, Rank.SEVEN));
     c.addBid(e, Bid.valueOf(Suit.HEARTS, Rank.EIGHT));
-    c.addBid(w, Bid.valueOf(Suit.noSuit(), Rank.EIGHT));
+    c.addBid(w, Bid.valueOf(Suit.NO_SUIT, Rank.EIGHT));
     c.addBid(e, Bid.PASS);
     assertEquals(w, c.getWinnerSeat());
-    assertEquals(Bid.valueOf(Suit.noSuit(), Rank.EIGHT), c.getWinnerBid());
+    assertEquals(Bid.valueOf(Suit.NO_SUIT, Rank.EIGHT), c.getWinnerBid());
     System.out.println("winner: " + c.getWinnerSeat() + " bid: "
         + c.getWinnerBid());
   }
