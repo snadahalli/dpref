@@ -29,12 +29,19 @@ public class Score {
   private static final IPlayer dumb = new DumbPlayer();
 
   private static final Map<Rank, Integer> gameValues = new HashMap<Rank, Integer>();
+  private static final Map<Rank, Integer> visterRequiredTricks = new HashMap<Rank, Integer>();
   static {
     gameValues.put(Rank.SIX, Integer.valueOf(2));
     gameValues.put(Rank.SEVEN, Integer.valueOf(4));
     gameValues.put(Rank.EIGHT, Integer.valueOf(6));
     gameValues.put(Rank.NINE, Integer.valueOf(8));
     gameValues.put(Rank.TEN, Integer.valueOf(10));
+    
+    visterRequiredTricks.put(Rank.SIX, Integer.valueOf(4));
+    visterRequiredTricks.put(Rank.SEVEN, Integer.valueOf(2));
+    visterRequiredTricks.put(Rank.EIGHT, Integer.valueOf(1));
+    visterRequiredTricks.put(Rank.NINE, Integer.valueOf(1));
+    visterRequiredTricks.put(Rank.TEN, Integer.valueOf(0));
   }
 
   public Score(int deals) {
@@ -91,6 +98,33 @@ public class Score {
     Bid game = c.getGame();
     Rank gameRank = game.getRank();
     int gameValue = gameValues.get(gameRank).intValue();
+    // check if winner performed the game well
+    // performer
+    Seat winner = c.getWinnerSeat();
+    int trickCount = deal.getTricks().get(winner).size();
+    int tricksRequired = gameRank.getValue();
+    boolean gameWon = trickCount >= tricksRequired;
+    if (gameWon) {
+      getWins(winner).addValue(gameValue);
+    } else {
+      getFines(winner).addValue(gameValue * (tricksRequired - trickCount));
+    }
+    // visters - vists
+    int allVistersTricks = 0;
+    for (Seat seat : getSeats()) {
+      if (seat != winner) {
+        int tricks = deal.getTricks().get(seat).size();
+        if (!gameWon) {
+          allVistersTricks += tricks;
+          tricks += (tricksRequired - trickCount);
+        }
+        getScoreSeq(seat, vists.get(winner)).addValue(tricks * gameValue);
+      }
+    }
+    // visters - fines
+    if (allVistersTricks < visterRequiredTricks.get(gameRank)) {
+      // TODO implement
+    }
   }
 
   private Map<Seat, ScoreSeq> copyScoreSeqMap(Map<Seat, ScoreSeq> source) {
