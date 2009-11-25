@@ -75,9 +75,7 @@ public class Contract {
     }
     if (miserBiden != null && miserBiden.equals(seat)) {
       // if said miser - only pass then
-      if (bid != Bid.PASS) {
-        return false;
-      }
+      return bid == Bid.PASS;
     }
     int lastNonPassValue = bidsValue.get(lastNonPassBid.bid).intValue();
     int bidValue = bidsValue.get(bid).intValue();
