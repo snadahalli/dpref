@@ -9,6 +9,7 @@ import com.dimmik.cards.pref.PrefDeal;
 import com.dimmik.cards.pref.trade.Bid;
 import com.dimmik.cards.pref.trade.Contract;
 import com.dimmik.cards.prefplayers.DumbPlayer;
+import com.dimmik.cards.sheets.card.Rank;
 import com.dimmik.cards.table.Deal;
 import com.dimmik.cards.table.DealException;
 import com.dimmik.cards.table.IPlayer;
@@ -26,9 +27,19 @@ public class Score {
   private final int maxDeals;
 
   private static final IPlayer dumb = new DumbPlayer();
-  
+
+  private static final Map<Rank, Integer> gameValues = new HashMap<Rank, Integer>();
+  static {
+    gameValues.put(Rank.SIX, Integer.valueOf(2));
+    gameValues.put(Rank.SEVEN, Integer.valueOf(4));
+    gameValues.put(Rank.EIGHT, Integer.valueOf(6));
+    gameValues.put(Rank.NINE, Integer.valueOf(8));
+    gameValues.put(Rank.TEN, Integer.valueOf(10));
+  }
+
   public Score(int deals) {
-    this(deals, new Seat("West", dumb), new Seat("North, dumb"), new Seat("East", dumb));
+    this(deals, new Seat("West", dumb), new Seat("North, dumb"), new Seat(
+        "East", dumb));
   }
 
   public Score(int maxDeals, Seat west, Seat north, Seat east) {
@@ -72,11 +83,14 @@ public class Score {
       return;
     }
     Contract c = deal.getContract();
-    if (c.getWinnerBid() == Bid.MISER) {
+    if (c.getGame() == Bid.MISER) {
       updateMiser(deal, c);
       return;
     }
     // TODO update scores in real valuable game
+    Bid game = c.getGame();
+    Rank gameRank = game.getRank();
+    int gameValue = gameValues.get(gameRank).intValue();
   }
 
   private Map<Seat, ScoreSeq> copyScoreSeqMap(Map<Seat, ScoreSeq> source) {
@@ -115,7 +129,7 @@ public class Score {
   private void calculateVistBalance(Map<Seat, Float> result) {
     for (Seat seat : vists.keySet()) {
       Map<Seat, ScoreSeq> vistsToThisSeat = vists.get(seat);
-      for (Seat vister: vistsToThisSeat.keySet()){
+      for (Seat vister : vistsToThisSeat.keySet()) {
         int vists = getScoreSeq(vister, vistsToThisSeat).getValue();
         float sFineResult = result.get(seat).floatValue() - vists;
         float visterR = result.get(vister).floatValue() + vists;

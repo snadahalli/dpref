@@ -59,7 +59,7 @@ public class ScoreSeq {
   @Override
   public String toString() {
     StringBuffer sb = new StringBuffer();
-    for (Integer v : scores) {
+    for (Integer v : getLastValues(4)) {
       sb.append(" " + v);
     }
     return sb.toString();

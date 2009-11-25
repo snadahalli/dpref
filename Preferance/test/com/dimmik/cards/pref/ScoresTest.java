@@ -41,23 +41,23 @@ public class ScoresTest extends TestCase {
 
   public void testMiserer() throws Throwable {
     System.out.println("\ntestMiserer");
-    int gamesCnt = 1;
+    int gamesCnt = 1000;
     List<Seat> seats = PrefTestUtility.getNorthMiserSeats();
     PrefGameFactory factory = new PrefGameFactory(gamesCnt);
     PrefGame game = factory.createGame(seats);
     game.process();
-    for (Deal dx : game.getDeals()) {
-      PrefDeal d = (PrefDeal) dx;
-      // System.out.println("contract: " + d.getContract());
-      // System.out.println("deal: " + d.getName());
-      int tricks = 0;
-      for (Seat seat : d.getTricks().keySet()) {
-        List<Move> moves = d.getTricks().get(seat);
-        // System.out.println(seat + "-> " + moves.size() + " tricks");
-        tricks += moves.size();
-      }
-      assertEquals(10, tricks);
-    }
+//    for (Deal dx : game.getDeals()) {
+//      PrefDeal d = (PrefDeal) dx;
+//      // System.out.println("contract: " + d.getContract());
+//      // System.out.println("deal: " + d.getName());
+//      int tricks = 0;
+//      for (Seat seat : d.getTricks().keySet()) {
+//        List<Move> moves = d.getTricks().get(seat);
+//        // System.out.println(seat + "-> " + moves.size() + " tricks");
+//        tricks += moves.size();
+//      }
+//      assertEquals(10, tricks);
+//    }
     Score s = game.getScore();
     for (Seat seat : s.getSeats()) {
       System.out.println(seat + " wins: " + s.getWins(seat));
