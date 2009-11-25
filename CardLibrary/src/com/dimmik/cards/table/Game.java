@@ -5,8 +5,9 @@ import java.util.List;
 
 /**
  * abstract class representing the game
+ * 
  * @author dkandrievsky
- *
+ * 
  */
 public abstract class Game {
   /**
@@ -14,9 +15,9 @@ public abstract class Game {
    */
   private final List<Deal> deals = new ArrayList<Deal>();
 
-  
   /**
    * game process
+   * 
    * @throws GameException
    */
   public void process() throws GameException {
@@ -30,7 +31,6 @@ public abstract class Game {
 
   }
 
-
   /**
    * 
    * @return deals in the game
@@ -41,15 +41,17 @@ public abstract class Game {
 
   /**
    * actions to do after each deal
+   * 
    * @param deal
    */
   protected abstract void dealPostProcess(Deal deal);
 
   /**
    * update status of the game - store score and so on
+   * 
    * @param deal
    */
-  protected abstract void updateGameStatus(Deal deal);
+  protected abstract void updateGameStatus(Deal deal) throws GameException;
 
   /**
    * 

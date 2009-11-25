@@ -90,11 +90,7 @@ public class PrefDeal extends Deal {
   @Override
   protected Move createMove() throws DealException {
     Suit trump = contract.getGame().getSuit();
-    // TODO seal with "all-pass" game. May be special kind of Move
     if (allPassGame && getMoves().size() < 2) {
-      // for first and second move - first open side cards.
-      // firstMover - the same.
-      // for third move - usual, but firstMover the same
       Card f = sideCards.getFirst();
       Card s = sideCards.getSecond();
       PrefPassMove move = new PrefPassMove(seats, currentMove, getMoves()
@@ -267,17 +263,18 @@ public class PrefDeal extends Deal {
     determineContractWinner();
     if (contract.getWinnerSeat() == null) {
       contract.setGame(Bid.PASS);
-      isDealAllPass();
+      setDealAllPass();
     } else { // add real game
       Seat winner = contract.getWinnerSeat();
       giveWinnerSideCards(winner);
       getThrownCardsFromWinner(winner);
       Bid game = setGameForDeal(winner);
       contract.setGame(game);
+      // TODO deal with pass/vist for other seats 
     }
   }
 
-  public void isDealAllPass() {
+  private void setDealAllPass() {
     allPassGame = true;
   }
 
@@ -397,7 +394,7 @@ public class PrefDeal extends Deal {
 
   public static class TwoCards {
     private final Card first;
-    public final Card second;
+    private final Card second;
 
     public TwoCards(Card f, Card s) {
       first = f;
@@ -411,6 +408,10 @@ public class PrefDeal extends Deal {
     public Card getSecond() {
       return second;
     }
+  }
+
+  public boolean isAllPassGame() {
+    return allPassGame;
   }
 
 }

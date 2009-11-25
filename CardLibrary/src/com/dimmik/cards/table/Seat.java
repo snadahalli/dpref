@@ -15,6 +15,10 @@ public class Seat {
   public Seat(String name) {
     this.name = name;
   }
+  public Seat(String name, IPlayer player) {
+    this(name);
+    setPlayer(player);
+  }
 
   public Card nextCard(Move move) {
     Card card = player.nextCard(this, move);

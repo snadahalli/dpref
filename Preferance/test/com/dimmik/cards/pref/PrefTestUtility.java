@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.dimmik.cards.prefplayers.DumbPlayer;
+import com.dimmik.cards.prefplayers.MiserDumbPlayer;
+import com.dimmik.cards.table.IPlayer;
 import com.dimmik.cards.table.Seat;
 
 public class PrefTestUtility {
@@ -36,6 +38,24 @@ public class PrefTestUtility {
     for (int i = 0; i < 3; i++) {
       seats.get(i).setPlayer(new DumbPlayer(passProbs[i]));
     }
+    return seats;
+  }
+
+  @SuppressWarnings("serial")
+  public static List<Seat> getNorthMiserSeats() {
+    List<Seat> seats = new ArrayList<Seat>() {
+      {
+        add(new Seat("West pass"));
+        add(new Seat("North miser"));
+        add(new Seat("East pass"));
+      }
+    };
+    int[] passProbs = new int[] { 100, 100, 100 };
+    for (int i = 0; i < 3; i++) {
+      seats.get(i).setPlayer(new DumbPlayer(passProbs[i]));
+    }
+    IPlayer miserer = new MiserDumbPlayer();
+    seats.get(1).setPlayer(miserer);
     return seats;
   }
 
