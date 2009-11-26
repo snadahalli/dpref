@@ -3,7 +3,6 @@ package org.dimmik.cards.pref;
 import java.util.List;
 
 import org.dimmik.cards.pref.score.Score;
-import org.dimmik.cards.table.Game;
 import org.dimmik.cards.table.GameFactory;
 import org.dimmik.cards.table.Seat;
 

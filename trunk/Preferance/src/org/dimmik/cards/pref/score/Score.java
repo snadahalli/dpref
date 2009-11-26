@@ -15,7 +15,6 @@ import org.dimmik.cards.table.DealException;
 import org.dimmik.cards.table.IPlayer;
 import org.dimmik.cards.table.Seat;
 
-
 // TODO as for now - just max deals, no real score update.
 // TODO may be makes sense to move seats into score
 public class Score {
@@ -37,7 +36,7 @@ public class Score {
     gameValues.put(Rank.EIGHT, Integer.valueOf(6));
     gameValues.put(Rank.NINE, Integer.valueOf(8));
     gameValues.put(Rank.TEN, Integer.valueOf(10));
-    
+
     visterRequiredTricks.put(Rank.SIX, Integer.valueOf(4));
     visterRequiredTricks.put(Rank.SEVEN, Integer.valueOf(2));
     visterRequiredTricks.put(Rank.EIGHT, Integer.valueOf(1));
@@ -84,6 +83,7 @@ public class Score {
     return s;
   }
 
+  // TODO now noly all-vist game is implemented
   public void update(PrefDeal deal) throws DealException {
     deals.add(deal);
     if (deal.isAllPassGame()) {
@@ -116,6 +116,7 @@ public class Score {
       if (seat != winner) {
         int tricks = deal.getTricks().get(seat).size();
         if (!gameWon) {
+          // if game is not won - add appropriate tricks to every vister
           allVistersTricks += tricks;
           tricks += (tricksRequired - trickCount);
         }
@@ -123,8 +124,24 @@ public class Score {
       }
     }
     // visters - fines
-    if (allVistersTricks < visterRequiredTricks.get(gameRank)) {
+    // TODO - think about complicated rules. Such as "non-gentlemen vist",
+    // "only last vist gets fines" and so on
+    int visterTricksRequired = visterRequiredTricks.get(gameRank);
+    if (allVistersTricks < visterTricksRequired) {
       // TODO implement
+      int eachRequired = 2;
+      if (visterTricksRequired < 4) {
+        eachRequired = 1;
+      }
+      for (Seat seat : getSeats()) {
+        if (seat != winner) {
+          int tricks = deal.getTricks().get(seat).size();
+          if (tricks < eachRequired) {
+            getFines(seat).addValue(gameValue * (eachRequired - tricks));
+          }
+        }
+      }
+
     }
   }
 
@@ -279,5 +296,9 @@ public class Score {
 
   public List<Deal> getDeals() {
     return deals;
+  }
+
+  public Map<Seat, Map<Seat, ScoreSeq>> getVists() {
+    return vists;
   }
 }
