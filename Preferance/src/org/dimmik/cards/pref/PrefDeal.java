@@ -266,6 +266,8 @@ public class PrefDeal extends Deal {
       contract.setGame(Bid.PASS);
       setDealAllPass();
     } else { // add real game
+      // TODO deal with possible pass/vist of non-winners
+      // pass-pass, pass-vist, pass-half-(pass/vist)
       Seat winner = contract.getWinnerSeat();
       giveWinnerSideCards(winner);
       getThrownCardsFromWinner(winner);
