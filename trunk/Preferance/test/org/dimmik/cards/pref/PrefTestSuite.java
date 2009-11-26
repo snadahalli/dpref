@@ -11,6 +11,7 @@ public class PrefTestSuite extends TestSuite {
     suite.addTestSuite(PrefDealTest.class);
     suite.addTestSuite(PrefGameTest.class);
     suite.addTestSuite(AllPassGameTest.class);
+    suite.addTestSuite(ScoresTest.class);
     return suite;
   }
 }
