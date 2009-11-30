@@ -83,7 +83,6 @@ public class Score {
     return s;
   }
 
-  // TODO now noly all-vist game is implemented
   public void update(PrefDeal deal) throws DealException {
     deals.add(deal);
     if (deal.isAllPassGame()) {
@@ -95,53 +94,76 @@ public class Score {
       updateMiser(deal, c);
       return;
     }
+    updateValuableGame(deal, c);
+  }
+
+  // TODO now only all-vist game is implemented
+  private void updateValuableGame(PrefDeal deal, Contract c)
+      throws DealException {
     // TODO update scores in real valuable game
     Bid game = c.getGame();
     Rank gameRank = game.getRank();
-    int gameValue = gameValues.get(gameRank).intValue();
-    // check if winner performed the game well
-    // performer
     Seat winner = c.getWinnerSeat();
-    int trickCount = deal.getTricks().get(winner).size();
+    int gameValue = gameValues.get(gameRank).intValue();
+    int trickCount = deal.getTricksCount(winner);
     int tricksRequired = gameRank.getValue();
     boolean gameWon = trickCount >= tricksRequired;
-    if (gameWon) {
-      getWins(winner).addValue(gameValue);
-    } else {
-      getFines(winner).addValue(gameValue * (tricksRequired - trickCount));
-    }
+    // check if winner performed the game well
+    // performer
+    updateWinnerScores(winner, gameValue, trickCount, tricksRequired, gameWon);
     // visters - vists
-    int allVistersTricks = 0;
-    for (Seat seat : getSeats()) {
-      if (seat != winner) {
-        int tricks = deal.getTricks().get(seat).size();
-        if (!gameWon) {
-          // if game is not won - add appropriate tricks to every vister
-          allVistersTricks += tricks;
-          tricks += (tricksRequired - trickCount);
-        }
-        getScoreSeq(seat, vists.get(winner)).addValue(tricks * gameValue);
-      }
-    }
+    int allVistersTricks = updateVistersVists(deal, winner, gameValue,
+        trickCount, tricksRequired, gameWon);
     // visters - fines
+    updateVistersFines(deal, gameRank, winner, gameValue, allVistersTricks);
+  }
+
+  private void updateVistersFines(PrefDeal deal, Rank gameRank, Seat winner,
+      int gameValue, int allVistersTricks) {
     // TODO - think about complicated rules. Such as "non-gentlemen vist",
     // "only last vist gets fines" and so on
     int visterTricksRequired = visterRequiredTricks.get(gameRank);
+    int upToRequired;
     if (allVistersTricks < visterTricksRequired) {
-      // TODO implement
+      upToRequired = visterTricksRequired - allVistersTricks;
       int eachRequired = 2;
       if (visterTricksRequired < 4) {
         eachRequired = 1;
       }
       for (Seat seat : getSeats()) {
         if (seat != winner) {
-          int tricks = deal.getTricks().get(seat).size();
+          int tricks = deal.getTricksCount(seat);
           if (tricks < eachRequired) {
-            getFines(seat).addValue(gameValue * (eachRequired - tricks));
+            getFines(seat).addValue(gameValue * Math.min((eachRequired - tricks), upToRequired));
           }
         }
       }
+    }
+  }
 
+  private int updateVistersVists(PrefDeal deal, Seat winner, int gameValue,
+      int trickCount, int tricksRequired, boolean gameWon) {
+    int allVistersTricks = 0;
+    for (Seat seat : getSeats()) {
+      if (seat != winner) {
+        int tricks = deal.getTricksCount(seat);
+        allVistersTricks += tricks;
+        if (!gameWon) {
+          // if game is not won - add appropriate tricks to every vister
+          tricks += (tricksRequired - trickCount);
+        }
+        getScoreSeq(seat, vists.get(winner)).addValue(tricks * gameValue);
+      }
+    }
+    return allVistersTricks;
+  }
+
+  private void updateWinnerScores(Seat winner, int gameValue, int trickCount,
+      int tricksRequired, boolean gameWon) {
+    if (gameWon) {
+      getWins(winner).addValue(gameValue);
+    } else {
+      getFines(winner).addValue(gameValue * (tricksRequired - trickCount));
     }
   }
 
@@ -232,7 +254,7 @@ public class Score {
 
   private void updateMiser(PrefDeal deal, Contract c) throws DealException {
     Seat winner = c.getWinnerSeat();
-    int tricks = getSeatTricksCnt(deal, winner);
+    int tricks = deal.getTricksCount(winner);
     if (tricks == 0) {
       getScoreSeq(winner, wins).addValue(10);
     } else {
@@ -245,17 +267,13 @@ public class Score {
     // TODO deal with different pass strategies
     int allPassValue = 1;
     for (Seat s : getSeats()) {
-      int tricks = getSeatTricksCnt(deal, s);
+      int tricks = deal.getTricksCount(s);
       if (tricks == 0) {
         getScoreSeq(s, wins).addValue(allPassValue);
       } else {
         getScoreSeq(s, fines).addValue(allPassValue * tricks);
       }
     }
-  }
-
-  private int getSeatTricksCnt(PrefDeal deal, Seat s) {
-    return deal.getTricks().get(s).size();
   }
 
   public ScoreSeq getFines(Seat seat) {

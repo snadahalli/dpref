@@ -72,12 +72,12 @@ public abstract class Deal {
     return name;
   }
 
-  /**
-   * returns tricks. 
-   * @return
-   */
-  public abstract Map<Seat, List<Move>> getTricks();/* {
-    return new HashMap<Seat, List<Move>>();
-  }*/
+//  /**
+//   * returns tricks. 
+//   * @return
+//   */
+//  public abstract Map<Seat, List<Move>> getTricks();/* {
+//    return new HashMap<Seat, List<Move>>();
+//  }*/
 
 }
