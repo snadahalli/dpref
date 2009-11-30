@@ -1,5 +1,8 @@
 package org.dimmik.cards.sheets.card;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Card {
   private final Suit suit;
   private final Rank rank;
@@ -35,6 +38,22 @@ public class Card {
       allCards[cardNum] = c;
     }
     return c;
+  }
+
+  public static Card fromString(String s) {
+    String suit = s.substring(s.length() - 1);
+    String rank = s.substring(0, s.length() - 1);
+    Card c = getInstance(Suit.fromString(suit), Rank.fromString(rank));
+    return c;
+  }
+
+  public static List<Card> fromDelimitedList(String list, String delim) {
+    String[] cardStrings = list.split(delim);
+    List<Card> cards = new ArrayList<Card>();
+    for (String cs : cardStrings) {
+      cards.add(fromString(cs));
+    }
+    return cards;
   }
 
   @Override

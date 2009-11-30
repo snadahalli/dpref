@@ -214,11 +214,20 @@ public class PrefDeal extends Deal {
   /**
    * tricks in the deal
    */
-  @Override
+  //@Override
   public Map<Seat, List<Move>> getTricks() {
     return tricks;
   }
 
+  /**
+   * returns count of the tricks
+   * @param seat
+   * @return
+   */
+  public int getTricksCount(Seat seat) {
+    return getTricks().get(seat).size();
+  }
+  
   /**
    * 
    * @return list where first move seats is the first element
