@@ -27,6 +27,9 @@ public class Bid {
   
   public static final Bid PASS = new Bid("PASS");
   public static final Bid MISER = new Bid("MISER");
+  // for visters
+  public static final Bid VIST = new Bid("VIST");
+  public static final Bid HALF = new Bid("HALF");
   
   public Suit getSuit() {
     return suit;

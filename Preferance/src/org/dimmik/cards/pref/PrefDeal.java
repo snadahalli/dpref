@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dimmik.cards.pref.score.Score;
 import org.dimmik.cards.pref.trade.Bid;
 import org.dimmik.cards.pref.trade.Contract;
 import org.dimmik.cards.sheets.card.Card;
@@ -16,7 +17,6 @@ import org.dimmik.cards.table.Deal;
 import org.dimmik.cards.table.DealException;
 import org.dimmik.cards.table.Move;
 import org.dimmik.cards.table.Seat;
-
 
 public class PrefDeal extends Deal {
 
@@ -108,12 +108,19 @@ public class PrefDeal extends Deal {
    */
   @Override
   protected void serveCards() {
+    clearSeatsCards();
     add10Cards(seats.get(0));
     add10Cards(seats.get(1));
     add10Cards(seats.get(2));
     Card fSide = deck.getNextCard();
     Card sSide = deck.getNextCard();
     sideCards = new TwoCards(fSide, sSide);
+  }
+
+  private void clearSeatsCards() {
+    seats.get(0).getCards().clear();
+    seats.get(1).getCards().clear();
+    seats.get(2).getCards().clear();
   }
 
   /**
@@ -190,7 +197,20 @@ public class PrefDeal extends Deal {
    */
   @Override
   protected boolean isThereMoreMoves() {
+    if (!shouldGameHaveMoves()) {
+      return false;
+    }
     return (seats.get(0).getCards().size() > 0);
+  }
+
+  public boolean shouldGameHaveMoves() {
+    if (isAllPassGame()) {
+      return true;
+    }
+    if (contract.getGame() == Bid.MISER) {
+      return true;
+    }
+    return contract.isGameVisted();
   }
 
   /**
@@ -214,20 +234,21 @@ public class PrefDeal extends Deal {
   /**
    * tricks in the deal
    */
-  //@Override
+  // @Override
   public Map<Seat, List<Move>> getTricks() {
     return tricks;
   }
 
   /**
    * returns count of the tricks
+   * 
    * @param seat
    * @return
    */
   public int getTricksCount(Seat seat) {
     return getTricks().get(seat).size();
   }
-  
+
   /**
    * 
    * @return list where first move seats is the first element
@@ -282,8 +303,71 @@ public class PrefDeal extends Deal {
       getThrownCardsFromWinner(winner);
       Bid game = setGameForDeal(winner);
       contract.setGame(game);
-      // TODO deal with pass/vist for other seats 
+      if (game != Bid.MISER) {
+        determineVisters(winner);
+        dealWithOneHalfVists(winner, game);
+      }
     }
+  }
+
+  private void dealWithOneHalfVists(Seat winner, Bid game) {
+    if (!contract.isGameVisted()) {
+      Seat byHalf = contract.getVistByHalf();
+      if (byHalf != null) {
+        for (int i = 0; i < Score.getHalfTricsCnt(game); i++) {
+          addTrick(byHalf, new NotPlayedMove(seats, 0, byHalf));
+        }
+      }
+      for (int i = 0; i < Score.getWinnerTricksRequired(game); i++) {
+        addTrick(winner, new NotPlayedMove(seats, 0, winner));
+      }
+    }
+  }
+
+  private void determineVisters(Seat winner) throws DealException {
+    List<Seat> nextToWinnerSeats = getNextToWinnerSeats(winner);
+    Seat first = nextToWinnerSeats.get(0);
+    Seat second = nextToWinnerSeats.get(1);
+    // ask first
+    Bid vBid = vistStep(first, Bid.PASS, Bid.VIST);
+    if (vBid == Bid.VIST) { // if vist - next options are pass or vist
+      vistStep(second, Bid.PASS, Bid.VIST);
+    } else { // if pass - next - pass or half is possible, vist/pass if not (8,
+      // 9, 10)
+      if (Score.isHalfPossible(contract.getGame())) {
+        vBid = vistStep(second, Bid.HALF, Bid.VIST);
+        if (vBid == Bid.HALF) {// if half - ask first for pass or vist
+          vistStep(first, Bid.PASS, Bid.VIST);
+        }
+      } else {
+        vistStep(second, Bid.PASS, Bid.VIST);
+      }
+    }
+  }
+
+  private Bid vistStep(Seat bidder, Bid... availableBids) throws DealException {
+    Bid vBid;
+    PrefTradeStepInfo stInfo = new PrefTradeStepInfo(PrefTradeStep.SET_VIST);
+    stInfo.setAvailableVists(availableBids);
+    bidder.tradeStep(this, stInfo);
+    vBid = stInfo.getVist();
+    if (!stInfo.isVistStepOk(vBid)) {
+      throw new DealException(vBid + " is not acceptable as vist bid");
+    }
+    contract.addVistBid(bidder, vBid);
+    return vBid;
+  }
+
+  private List<Seat> getNextToWinnerSeats(Seat winner) {
+    List<Seat> nws = new ArrayList<Seat>();
+    int wIdx = seats.indexOf(winner);
+    for (int i = wIdx + 1; i < seats.size(); i++) {
+      nws.add(seats.get(i));
+    }
+    for (int i = 0; i < wIdx; i++) {
+      nws.add(seats.get(i));
+    }
+    return nws;
   }
 
   private void setDealAllPass() {
@@ -336,7 +420,8 @@ public class PrefDeal extends Deal {
     }
     // check that cards are really thrown and so on
     if (winner.getCards().size() != 10) {
-      throw new DealException("winner should keep 10 cards");
+      throw new DealException("winner should keep 10 cards, not "
+          + winner.getCards().size());
     }
     if (winner.getCards().contains(firstThrown)
         || winner.getCards().contains(secondThrown)) {
@@ -419,6 +504,9 @@ public class PrefDeal extends Deal {
 
     public Card getSecond() {
       return second;
+    }
+    public String toString(){
+      return first + ", " + second;
     }
   }
 

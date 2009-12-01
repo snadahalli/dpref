@@ -44,6 +44,26 @@ public class Score {
     visterRequiredTricks.put(Rank.TEN, Integer.valueOf(0));
   }
 
+  public static boolean isHalfPossible(Bid game) {
+    Rank r = game.getRank();
+    return (visterRequiredTricks.get(r).intValue() > 1);
+  }
+
+  public static int getHalfTricsCnt(Bid game) {
+    Rank r = game.getRank();
+    int half = 2;
+    if (visterRequiredTricks.get(r).intValue() < 4) {
+      half = 1;
+    }
+    return half;
+
+  }
+
+  public static int getWinnerTricksRequired(Bid game) {
+    Rank r = game.getRank();
+    return r.getValue();
+  }
+
   public Score(int deals) {
     this(deals, new Seat("West", dumb), new Seat("North, dumb"), new Seat(
         "East", dumb));
@@ -134,7 +154,8 @@ public class Score {
         if (seat != winner) {
           int tricks = deal.getTricksCount(seat);
           if (tricks < eachRequired) {
-            getFines(seat).addValue(gameValue * Math.min((eachRequired - tricks), upToRequired));
+            getFines(seat).addValue(
+                gameValue * Math.min((eachRequired - tricks), upToRequired));
           }
         }
       }
@@ -263,15 +284,22 @@ public class Score {
   }
 
   private void updateAllPass(PrefDeal deal) {
-    // TODO implement fines amnisty
-    // TODO deal with different pass strategies
+    // XXX deal with different pass strategies ??? What does it mean?!
+    // Butthead, be more concrete!!!
     int allPassValue = 1;
+    int minTricks = Integer.MAX_VALUE;
+    for (Seat s : getSeats()) {
+      int tricks = deal.getTricksCount(s);
+      if (tricks < minTricks) {
+        minTricks = tricks;
+      }
+    }
     for (Seat s : getSeats()) {
       int tricks = deal.getTricksCount(s);
       if (tricks == 0) {
         getScoreSeq(s, wins).addValue(allPassValue);
       } else {
-        getScoreSeq(s, fines).addValue(allPassValue * tricks);
+        getScoreSeq(s, fines).addValue(allPassValue * (tricks - minTricks));
       }
     }
   }
@@ -319,4 +347,5 @@ public class Score {
   public Map<Seat, Map<Seat, ScoreSeq>> getVists() {
     return vists;
   }
+
 }

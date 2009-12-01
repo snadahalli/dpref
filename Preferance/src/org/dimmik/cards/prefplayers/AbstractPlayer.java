@@ -1,5 +1,7 @@
 package org.dimmik.cards.prefplayers;
 
+import java.util.List;
+
 import org.dimmik.cards.pref.PrefDeal;
 import org.dimmik.cards.pref.PrefTradeStepInfo;
 import org.dimmik.cards.pref.PrefDeal.TwoCards;
@@ -44,9 +46,15 @@ public abstract class AbstractPlayer implements IPlayer {
       Bid game = setGame(seat, d);
       bc.setGame(game);
       break;
+    case SET_VIST:
+      Bid vist = setVist(seat, d, bc.getAvailableBids());
+      bc.setVist(vist);
+      break;
     }
 
   }
+
+  protected abstract Bid setVist(Seat seat, PrefDeal d, List<Bid> availableBids);
 
   protected abstract Bid setGame(Seat seat, PrefDeal d);
 

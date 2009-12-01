@@ -71,7 +71,7 @@ public class ScoresTest extends TestCase {
 
   public void testDumbs() throws Throwable {
     System.out.println("\ntestDumbs");
-    int gamesCnt = 1;
+    int gamesCnt = 10;
     List<Seat> seats = PrefTestUtility.getSeats();
     PrefGameFactory factory = new PrefGameFactory(gamesCnt);
     PrefGame game = factory.createGame(seats);
@@ -86,7 +86,9 @@ public class ScoresTest extends TestCase {
         System.out.println(seat + "-> " + moves.size() + " tricks");
         tricks += moves.size();
       }
-      assertEquals(10, tricks);
+      if (d.shouldGameHaveMoves()) {
+        assertEquals(10, tricks);
+      }
     }
     Score s = game.getScore();
     for (Seat seat : s.getSeats()) {

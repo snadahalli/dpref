@@ -12,12 +12,13 @@ import org.dimmik.cards.sheets.card.Suit;
 import org.dimmik.cards.table.DealException;
 import org.dimmik.cards.table.Seat;
 
-
 public class Contract {
 
   private final List<Seat> seats;
   private final Map<Seat, Bid> lastBid = new HashMap<Seat, Bid>();
   private final List<SeatBid> seatBids = new ArrayList<SeatBid>();
+  private final List<SeatBid> vistBids = new ArrayList<SeatBid>();
+  private final List<Seat> visters = new ArrayList<Seat>();
 
   private SeatBid lastNonPassBid = null;
 
@@ -41,6 +42,7 @@ public class Contract {
 
   private final Set<Seat> seatsPassed = new HashSet<Seat>();
   private Seat miserBiden = null;
+  private Seat vistByHalf = null;
 
   private void initAllBids() {
     for (Rank r : ranksBeforeMiser) {
@@ -84,6 +86,27 @@ public class Contract {
       return true;
     }
     return false;
+  }
+
+  public void addVistBid(Seat bidder, Bid bid) throws DealException {
+    if (!isTradeFinished()) {
+      throw new DealException("vist bid before trade is finished");
+    }
+    SeatBid sb = new SeatBid(bidder, bid);
+    vistBids.add(sb);
+    if (bid == Bid.VIST) {
+      visters.add(bidder);
+    } else if (bid == Bid.HALF) {
+      vistByHalf  = bidder;
+    }
+  }
+
+  public boolean isGameVisted() {
+    return !visters.isEmpty();
+  }
+
+  public boolean isVister(Seat s) {
+    return visters.contains(s);
   }
 
   public void addBid(Seat bidder, Bid bid) throws DealException {
@@ -251,6 +274,10 @@ public class Contract {
       try {
         sb.append("winner: ").append(getWinnerSeat()).append(" -> ").append(
             getWinnerBid());
+        sb.append("\nothers:");
+        for (SeatBid vsb: vistBids){
+          sb.append("\n- ").append(vsb.seat).append(": ").append(vsb.bid);
+        }
       } catch (DealException e) {
         sb.append("but something went wrong with it: " + e);
       }
@@ -272,6 +299,10 @@ public class Contract {
       seat = s;
       bid = b;
     }
+  }
+
+  public Seat getVistByHalf() {
+    return vistByHalf;
   }
 
 }

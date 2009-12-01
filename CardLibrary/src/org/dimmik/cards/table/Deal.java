@@ -2,7 +2,6 @@ package org.dimmik.cards.table;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public abstract class Deal {
   private final String name;
@@ -60,6 +59,7 @@ public abstract class Deal {
   @Override
   public String toString() {
     StringBuffer sb = new StringBuffer();
+    sb.append(name);
     int i = 1;
     for (Move move : moves) {
       sb.append("\n").append(i).append(". ").append(move);

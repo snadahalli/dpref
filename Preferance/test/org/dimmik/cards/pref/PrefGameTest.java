@@ -12,13 +12,12 @@ import org.dimmik.cards.table.Seat;
 
 import junit.framework.TestCase;
 
-
 public class PrefGameTest extends TestCase {
 
   public void testGame() throws Throwable {
     System.out.println("testGame");
     int gamesCnt = 15;
-    List<Seat> seats = PrefTestUtility.getSeats();
+    List<Seat> seats = PrefTestUtility.getVistersSeats();
     GameFactory factory = new PrefGameFactory(gamesCnt);
     Game game = factory.createGame(seats);
     game.process();
@@ -40,8 +39,8 @@ public class PrefGameTest extends TestCase {
   }
 
   public void testUsual() throws Throwable {
-    System.out.println("testAllPass");
-    int gamesCnt = 2;
+    System.out.println("testUsual");
+    int gamesCnt = 20;
     List<Seat> seats = PrefTestUtility.getSeats();
     GameFactory factory = new PrefGameFactory(gamesCnt);
     Game game = factory.createGame(seats);
@@ -56,7 +55,9 @@ public class PrefGameTest extends TestCase {
         System.out.println(seat + "-> " + moves.size() + " tricks");
         tricks += moves.size();
       }
-      assertEquals(10, tricks);
+      if (d.shouldGameHaveMoves()) {
+        assertEquals(10, tricks);
+      }
     }
 
   }

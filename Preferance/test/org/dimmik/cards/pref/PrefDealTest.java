@@ -15,17 +15,18 @@ import junit.framework.TestCase;
 
 public class PrefDealTest extends TestCase {
   public void testDeal() throws Throwable {
-    List<Seat> seats = PrefTestUtility.getSeats();
+    List<Seat> seats = PrefTestUtility.getAllPassSeats();
     PrefDeal d = new PrefDeal("test", seats, 0);
     d.process();
-    // System.out.println("deal: " + d);
+    System.out.println("deal: " + d);
     Set<Card> cardSet = new HashSet<Card>();
     for (Move m : d.getMoves()) {
       for (Card card : m.getCards()) {
         cardSet.add(card);
       }
     }
-    assertEquals(30, cardSet.size());
+    // all-pass for sure
+    assertEquals(32, cardSet.size());
   }
 
   public void testDealWithTradeCheck() throws Throwable {
