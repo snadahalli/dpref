@@ -60,4 +60,12 @@ public class PrefTestUtility {
     return seats;
   }
 
+  public static List<Seat> getVistersSeats(){
+    List<Seat> seats = getSeats();
+    int[] passProbs = new int[] { 50, 10, 90 };
+    for (int i = 0; i < 3; i++) {
+      seats.get(i).setPlayer(new DumbPlayer(passProbs[i], 100));
+    }
+    return seats;
+  }
 }

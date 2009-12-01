@@ -1,5 +1,6 @@
 package org.dimmik.cards.prefplayers;
 
+import java.util.List;
 import java.util.Random;
 
 import org.dimmik.cards.pref.PrefDeal;
@@ -10,7 +11,6 @@ import org.dimmik.cards.pref.trade.Contract;
 import org.dimmik.cards.sheets.card.Card;
 import org.dimmik.cards.table.Move;
 import org.dimmik.cards.table.Seat;
-
 
 /**
  * just dumb pref player. It would be useful to inherit from it to implement
@@ -23,15 +23,22 @@ public class DumbPlayer extends AbstractPlayer {
 
   private final static Random r = new Random();
   private final int passProbability;
+  private final int vistProbability;
 
   public DumbPlayer(int passProbability) {
     this.passProbability = passProbability;
+    this.vistProbability = 0;
+  }
+
+  public DumbPlayer(int passProbability, int vistP) {
+    this.passProbability = passProbability;
+    this.vistProbability = vistP;
   }
 
   public DumbPlayer() {
     this(50);
   }
-  
+
   @Override
   public Card nextCard(Seat seat, Move move) {
     for (Card card : seat.getCards()) {
@@ -85,6 +92,15 @@ public class DumbPlayer extends AbstractPlayer {
     // TODO think how to avoid this possibility
     // c.setGame(any game);
     return game;
+  }
+
+  @Override
+  protected Bid setVist(Seat seat, PrefDeal d, List<Bid> availableBids) {
+    int prob = r.nextInt(100);
+    if (prob < vistProbability) {
+      return Bid.VIST;
+    }
+    return availableBids.get(0);
   }
 
 }
