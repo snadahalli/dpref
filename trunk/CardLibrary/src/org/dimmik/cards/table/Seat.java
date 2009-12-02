@@ -1,15 +1,20 @@
 package org.dimmik.cards.table;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.dimmik.cards.sheets.card.Card;
 
 
-public class Seat {
+public class Seat implements Serializable{
 
+  /**
+   * 
+   */
+  private static final long serialVersionUID = -1362539417438893576L;
   private final String name;
-  private IPlayer player;
+  private transient IPlayer player;
 
   private final List<Card> cards = new LinkedList<Card>();
 

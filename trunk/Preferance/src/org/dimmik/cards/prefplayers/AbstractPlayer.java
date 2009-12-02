@@ -13,7 +13,6 @@ import org.dimmik.cards.table.ITradeStepInfo;
 import org.dimmik.cards.table.Move;
 import org.dimmik.cards.table.Seat;
 
-
 public abstract class AbstractPlayer implements IPlayer {
 
   public abstract Card nextCard(Seat seat, Move move);
@@ -50,6 +49,8 @@ public abstract class AbstractPlayer implements IPlayer {
       Bid vist = setVist(seat, d, bc.getAvailableBids());
       bc.setVist(vist);
       break;
+    default:
+      throw new IllegalStateException("unknownm trade step");
     }
 
   }

@@ -81,7 +81,7 @@ public class Score {
 
   public Score(int maxDeals, List<Seat> seats) {
     this(maxDeals, seats.get(0), seats.get(1), seats.get(2));
-    if (seats == null || seats.size() != 3) {
+    if (seats.size() != 3) {
       throw new IllegalArgumentException("there should be 3 seats");
     }
   }
@@ -190,8 +190,8 @@ public class Score {
 
   private Map<Seat, ScoreSeq> copyScoreSeqMap(Map<Seat, ScoreSeq> source) {
     Map<Seat, ScoreSeq> dest = new HashMap<Seat, ScoreSeq>();
-    for (Seat seat : source.keySet()) {
-      dest.put(seat, new ScoreSeq(source.get(seat)));
+    for (Map.Entry<Seat, ScoreSeq> seatSc: source.entrySet()) {
+      dest.put(seatSc.getKey(), new ScoreSeq(seatSc.getValue()));
     }
     return dest;
   }
@@ -228,8 +228,8 @@ public class Score {
         int vists = getScoreSeq(vister, vistsToThisSeat).getValue();
         float sFineResult = result.get(seat).floatValue() - vists;
         float visterR = result.get(vister).floatValue() + vists;
-        result.put(seat, new Float(sFineResult));
-        result.put(vister, new Float(visterR));
+        result.put(seat, Float.valueOf(sFineResult));
+        result.put(vister, Float.valueOf(visterR));
       }
     }
   }
@@ -239,7 +239,7 @@ public class Score {
     Map<Seat, Float> fineScores = new HashMap<Seat, Float>();
     for (Seat seat : getSeats()) {
       float vists = (average - getScoreSeq(seat, rFines).getValue()) * 10;
-      fineScores.put(seat, new Float(vists));
+      fineScores.put(seat, Float.valueOf(vists));
     }
     return fineScores;
   }

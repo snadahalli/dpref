@@ -7,6 +7,7 @@ import java.util.List;
  * @author dkandrievsky
  *
  */
+// TODO do we really need this class?.. 
 public class Table {
   private GameFactory gameFactory;
   private List<Seat> seats;

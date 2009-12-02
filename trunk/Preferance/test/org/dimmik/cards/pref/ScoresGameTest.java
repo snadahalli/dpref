@@ -42,7 +42,7 @@ public class ScoresGameTest extends TestCase {
     score = new Score(1, seats);
     score.update(deal);
     System.out.println("deal: " + deal + " bid: " + bid);
-    for (Seat seat: seats) {
+    for (Seat seat : seats) {
       System.out.println(seat + " -> " + score.getResult(seat));
     }
     assertEquals(expected, Float.valueOf(score.getResult(n)).intValue());
@@ -54,7 +54,7 @@ public class ScoresGameTest extends TestCase {
     final Seat w = seats.get(0);
     final Seat n = seats.get(1);
     final Seat e = seats.get(2);
-    final PrefDeal deal = new PrefDeal("6s test deal", seats, 0) {
+    final PrefDeal deal = new PrefDeal("the test deal", seats, 0) {
 
       Map<Seat, Integer> tricks = new HashMap<Seat, Integer>() {
         {
@@ -89,9 +89,9 @@ public class ScoresGameTest extends TestCase {
   }
 
   private Contract getContract(final List<Seat> seats, final Bid bid) {
-    final Seat w = seats.get(0);
+    // final Seat w = seats.get(0);
     final Seat n = seats.get(1);
-    final Seat e = seats.get(2);
+    // final Seat e = seats.get(2);
     final Contract c = new Contract(seats) {
 
       @Override
