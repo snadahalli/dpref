@@ -7,11 +7,16 @@ import java.util.List;
  * @author dkandrievsky
  *
  */
-// TODO do we really need this class?.. 
+// TODO do we really need this class at all?.. 
 public class Table {
-  private GameFactory gameFactory;
-  private List<Seat> seats;
+  private final GameFactory gameFactory;
+  private final List<Seat> seats;
 
+  public Table(GameFactory gf, List<Seat> seats){
+    gameFactory = gf;
+    this.seats = seats; 
+  }
+  
   public Game doGame() throws GameException {
     Game game = gameFactory.createGame(seats);
     game.process();
@@ -22,15 +27,9 @@ public class Table {
     return gameFactory;
   }
 
-  public void setGameFactory(GameFactory gameFactory) {
-    this.gameFactory = gameFactory;
-  }
 
   public List<Seat> getSeats() {
     return seats;
   }
 
-  public void setSeats(List<Seat> seats) {
-    this.seats = seats;
-  }
 }
