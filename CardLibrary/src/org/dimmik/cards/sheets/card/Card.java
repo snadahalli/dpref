@@ -1,9 +1,14 @@
 package org.dimmik.cards.sheets.card;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Card {
+public class Card implements Serializable{
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 4608280795416738732L;
   private final Suit suit;
   private final Rank rank;
 

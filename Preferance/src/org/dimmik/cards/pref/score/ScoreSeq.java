@@ -28,7 +28,7 @@ public class ScoreSeq {
    */
   public void addValue(int valueToAdd) {
     if (valueToAdd != 0) {
-      scores.add(new Integer(getValue() + valueToAdd));
+      scores.add(Integer.valueOf(getValue() + valueToAdd));
     }
   }
 

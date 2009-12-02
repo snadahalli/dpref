@@ -50,15 +50,6 @@ public class DumbPlayer extends AbstractPlayer {
     return seat.getCards().get(0);
   }
 
-  protected void setGame(Seat seat, PrefDeal d, PrefTradeStepInfo bc) {
-    Contract c = d.getContract();
-    Bid game = Bid.PASS;
-    game = c.getFirstAvailableGame();
-    // TODO think how to avoid this possibility
-    // c.setGame(any game);
-    bc.setGame(game);
-
-  }
 
   protected void giveSideCards(Seat seat, PrefDeal d, PrefTradeStepInfo bc) {
     // just nothing
@@ -87,8 +78,7 @@ public class DumbPlayer extends AbstractPlayer {
   @Override
   protected Bid setGame(Seat seat, PrefDeal d) {
     Contract c = d.getContract();
-    Bid game = Bid.PASS;
-    game = c.getFirstAvailableGame();
+    Bid game = c.getFirstAvailableGame();
     // TODO think how to avoid this possibility
     // c.setGame(any game);
     return game;
