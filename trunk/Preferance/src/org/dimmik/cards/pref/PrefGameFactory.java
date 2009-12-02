@@ -16,7 +16,7 @@ public class PrefGameFactory implements GameFactory {
   }
   
   public PrefGame createGame(List<Seat> seats) {
-    return new PrefGame(new Score(deals, seats));
+    return new PrefGame(new Score(deals, seats.get(0), seats.get(1), seats.get(2)));
   }
 
 }

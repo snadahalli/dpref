@@ -39,7 +39,7 @@ public class ScoresGameTest extends TestCase {
     Seat n = seats.get(1);
     Contract c = getContract(seats, bid);
     deal = getDeal(seats, c, tricks);
-    score = new Score(1, seats);
+    score = new Score(1, seats.get(0), seats.get(1), seats.get(2));
     score.update(deal);
     System.out.println("deal: " + deal + " bid: " + bid);
     for (Seat seat : seats) {

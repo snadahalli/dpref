@@ -28,31 +28,16 @@ public class Score {
 
   private static final IPlayer dumb = new DumbPlayer();
 
-  private static final Map<Rank, Integer> gameValues = new HashMap<Rank, Integer>();
-  private static final Map<Rank, Integer> visterRequiredTricks = new HashMap<Rank, Integer>();
-  static {
-    gameValues.put(Rank.SIX, Integer.valueOf(2));
-    gameValues.put(Rank.SEVEN, Integer.valueOf(4));
-    gameValues.put(Rank.EIGHT, Integer.valueOf(6));
-    gameValues.put(Rank.NINE, Integer.valueOf(8));
-    gameValues.put(Rank.TEN, Integer.valueOf(10));
-
-    visterRequiredTricks.put(Rank.SIX, Integer.valueOf(4));
-    visterRequiredTricks.put(Rank.SEVEN, Integer.valueOf(2));
-    visterRequiredTricks.put(Rank.EIGHT, Integer.valueOf(1));
-    visterRequiredTricks.put(Rank.NINE, Integer.valueOf(1));
-    visterRequiredTricks.put(Rank.TEN, Integer.valueOf(0));
-  }
+  private static final GameRules gr = new GameRules();
 
   public static boolean isHalfPossible(Bid game) {
     Rank r = game.getRank();
-    return (visterRequiredTricks.get(r).intValue() > 1);
+    return (gr.getVistersRequiredTricks(game) > 1);
   }
 
   public static int getHalfTricsCnt(Bid game) {
-    Rank r = game.getRank();
     int half = 2;
-    if (visterRequiredTricks.get(r).intValue() < 4) {
+    if (gr.getVistersRequiredTricks(game) < 4) {
       half = 1;
     }
     return half;
@@ -79,19 +64,21 @@ public class Score {
     vists.put(east, new HashMap<Seat, ScoreSeq>());
   }
 
-  public Score(int maxDeals, List<Seat> seats) {
-    this(maxDeals, seats.get(0), seats.get(1), seats.get(2));
-    if (seats.size() != 3) {
-      throw new IllegalArgumentException("there should be 3 seats");
-    }
-  }
-
   // Vists
   // Game scores (pulya)
-  // Fine scores (gora)
+  // Fines scores (gora)
 
+  /**
+   * fines "gora" for seat
+   */
   private final Map<Seat, ScoreSeq> fines = new HashMap<Seat, ScoreSeq>();
+  /**
+   * wins "pulya" for seats
+   */
   private final Map<Seat, ScoreSeq> wins = new HashMap<Seat, ScoreSeq>();
+  /**
+   * vists for seats (how many vists has others to this)
+   */
   private final Map<Seat, Map<Seat, ScoreSeq>> vists = new HashMap<Seat, Map<Seat, ScoreSeq>>();
 
   private ScoreSeq getScoreSeq(Seat seat, Map<Seat, ScoreSeq> scoreMap) {
@@ -124,25 +111,25 @@ public class Score {
     Bid game = c.getGame();
     Rank gameRank = game.getRank();
     Seat winner = c.getWinnerSeat();
-    int gameValue = gameValues.get(gameRank).intValue();
+    int gameValue = gr.getGameValue(game);
     int trickCount = deal.getTricksCount(winner);
     int tricksRequired = gameRank.getValue();
-    boolean gameWon = trickCount >= tricksRequired;
+    boolean gameWon = (trickCount >= tricksRequired);
     // check if winner performed the game well
     // performer
-    updateWinnerScores(winner, gameValue, trickCount, tricksRequired, gameWon);
+    updateWinnerScores(winner, game, trickCount);
     // visters - vists
-    int allVistersTricks = updateVistersVists(deal, winner, gameValue,
-        trickCount, tricksRequired, gameWon);
+    int allVistersTricks = updateVistersVists(deal, winner, game, trickCount);
     // visters - fines
-    updateVistersFines(deal, gameRank, winner, gameValue, allVistersTricks);
+    updateVistersFines(deal, winner, game, allVistersTricks);
   }
 
-  private void updateVistersFines(PrefDeal deal, Rank gameRank, Seat winner,
-      int gameValue, int allVistersTricks) {
+  private void updateVistersFines(PrefDeal deal, Seat winner, Bid game,
+      int allVistersTricks) {
     // TODO - think about complicated rules. Such as "non-gentlemen vist",
     // "only last vist gets fines" and so on
-    int visterTricksRequired = visterRequiredTricks.get(gameRank);
+    int gameValue = gr.getGameValue(game);
+    int visterTricksRequired = gr.getVistersRequiredTricks(game);
     int upToRequired;
     if (allVistersTricks < visterTricksRequired) {
       upToRequired = visterTricksRequired - allVistersTricks;
@@ -162,8 +149,12 @@ public class Score {
     }
   }
 
-  private int updateVistersVists(PrefDeal deal, Seat winner, int gameValue,
-      int trickCount, int tricksRequired, boolean gameWon) {
+  private int updateVistersVists(PrefDeal deal, Seat winner, Bid game,
+      int trickCount) {
+    int tricksRequired = gr.getGameTricksRequired(game);
+    int gameValue = gr.getGameValue(game);
+    boolean gameWon = (trickCount > tricksRequired);
+
     int allVistersTricks = 0;
     for (Seat seat : getSeats()) {
       if (seat != winner) {
@@ -179,8 +170,10 @@ public class Score {
     return allVistersTricks;
   }
 
-  private void updateWinnerScores(Seat winner, int gameValue, int trickCount,
-      int tricksRequired, boolean gameWon) {
+  private void updateWinnerScores(Seat winner, Bid game, int trickCount) {
+    int gameValue = gr.getGameValue(game);
+    int tricksRequired = gr.getGameTricksRequired(game);
+    boolean gameWon = trickCount >= tricksRequired;
     if (gameWon) {
       getWins(winner).addValue(gameValue);
     } else {
@@ -190,7 +183,7 @@ public class Score {
 
   private Map<Seat, ScoreSeq> copyScoreSeqMap(Map<Seat, ScoreSeq> source) {
     Map<Seat, ScoreSeq> dest = new HashMap<Seat, ScoreSeq>();
-    for (Map.Entry<Seat, ScoreSeq> seatSc: source.entrySet()) {
+    for (Map.Entry<Seat, ScoreSeq> seatSc : source.entrySet()) {
       dest.put(seatSc.getKey(), new ScoreSeq(seatSc.getValue()));
     }
     return dest;
