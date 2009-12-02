@@ -157,7 +157,10 @@ public class PrefDeal extends Deal {
    *          the move won
    */
   private void addTrick(Seat winner, Move move) {
-    List<Move> seatMoves = getTricks().get(winner);
+    // TODO add trick only if this vister can get tricks
+    // (not PASS). If it is PASS seat (and game is not miser or all-pass), add
+    // to vister
+    List<Move> seatMoves = tricks.get(winner);
     if (seatMoves == null) {
       seatMoves = new ArrayList<Move>();
       tricks.put(winner, seatMoves);
@@ -296,8 +299,6 @@ public class PrefDeal extends Deal {
       contract.setGame(Bid.PASS);
       setDealAllPass();
     } else { // add real game
-      // TODO deal with possible pass/vist of non-winners
-      // pass-pass, pass-vist, pass-half-(pass/vist)
       Seat winner = contract.getWinnerSeat();
       giveWinnerSideCards(winner);
       getThrownCardsFromWinner(winner);
@@ -505,7 +506,8 @@ public class PrefDeal extends Deal {
     public Card getSecond() {
       return second;
     }
-    public String toString(){
+
+    public String toString() {
       return first + ", " + second;
     }
   }

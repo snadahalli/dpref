@@ -17,8 +17,7 @@ public class NotPlayedMove extends Move {
 
   @Override
   public boolean isCardAcceptable(Card card, Seat seat) {
-    // TODO Auto-generated method stub
-    return false;
+    throw new IllegalStateException("this move is not intended as played move");
   }
 
   @Override

@@ -15,8 +15,6 @@ import org.dimmik.cards.table.DealException;
 import org.dimmik.cards.table.IPlayer;
 import org.dimmik.cards.table.Seat;
 
-// TODO as for now - just max deals, no real score update.
-// TODO may be makes sense to move seats into score
 public class Score {
   private final Seat west;
   private final Seat north;
@@ -31,7 +29,6 @@ public class Score {
   private static final GameRules gr = new GameRules();
 
   public static boolean isHalfPossible(Bid game) {
-    Rank r = game.getRank();
     return (gr.getVistersRequiredTricks(game) > 1);
   }
 
@@ -45,12 +42,11 @@ public class Score {
   }
 
   public static int getWinnerTricksRequired(Bid game) {
-    Rank r = game.getRank();
-    return r.getValue();
+    return gr.getGameTricksRequired(game);
   }
 
   public Score(int deals) {
-    this(deals, new Seat("West", dumb), new Seat("North, dumb"), new Seat(
+    this(deals, new Seat("West", dumb), new Seat("North", dumb), new Seat(
         "East", dumb));
   }
 
@@ -77,7 +73,8 @@ public class Score {
    */
   private final Map<Seat, ScoreSeq> wins = new HashMap<Seat, ScoreSeq>();
   /**
-   * vists for seats (how many vists has others to this)
+   * vists for seats (how many vists has others to the seat denoted by key
+   * entry)
    */
   private final Map<Seat, Map<Seat, ScoreSeq>> vists = new HashMap<Seat, Map<Seat, ScoreSeq>>();
 
@@ -93,93 +90,133 @@ public class Score {
   public void update(PrefDeal deal) throws DealException {
     deals.add(deal);
     if (deal.isAllPassGame()) {
-      updateAllPass(deal);
+      updateForAllPass(deal);
       return;
     }
     Contract c = deal.getContract();
     if (c.getGame() == Bid.MISER) {
-      updateMiser(deal, c);
+      updateForMiser(deal);
       return;
     }
-    updateValuableGame(deal, c);
+    updateForValuableGame(deal);
   }
 
-  // TODO now only all-vist game is implemented
-  private void updateValuableGame(PrefDeal deal, Contract c)
-      throws DealException {
-    // TODO update scores in real valuable game
-    Bid game = c.getGame();
-    Rank gameRank = game.getRank();
-    Seat winner = c.getWinnerSeat();
-    int gameValue = gr.getGameValue(game);
-    int trickCount = deal.getTricksCount(winner);
-    int tricksRequired = gameRank.getValue();
-    boolean gameWon = (trickCount >= tricksRequired);
-    // check if winner performed the game well
-    // performer
-    updateWinnerScores(winner, game, trickCount);
-    // visters - vists
-    int allVistersTricks = updateVistersVists(deal, winner, game, trickCount);
-    // visters - fines
-    updateVistersFines(deal, winner, game, allVistersTricks);
-  }
+  private void updateForValuableGame(PrefDeal deal) throws DealException {
 
-  private void updateVistersFines(PrefDeal deal, Seat winner, Bid game,
-      int allVistersTricks) {
-    // TODO - think about complicated rules. Such as "non-gentlemen vist",
-    // "only last vist gets fines" and so on
-    int gameValue = gr.getGameValue(game);
-    int visterTricksRequired = gr.getVistersRequiredTricks(game);
-    int upToRequired;
-    if (allVistersTricks < visterTricksRequired) {
-      upToRequired = visterTricksRequired - allVistersTricks;
-      int eachRequired = 2;
-      if (visterTricksRequired < 4) {
-        eachRequired = 1;
-      }
-      for (Seat seat : getSeats()) {
-        if (seat != winner) {
-          int tricks = deal.getTricksCount(seat);
-          if (tricks < eachRequired) {
-            getFines(seat).addValue(
-                gameValue * Math.min((eachRequired - tricks), upToRequired));
-          }
-        }
-      }
-    }
-  }
+    Map<Seat, Integer> sTricks = getScorableTricks(deal);
+    // in sTricks - Seat -> tricks, to take into account
+    // including extra tricks if game is not won
 
-  private int updateVistersVists(PrefDeal deal, Seat winner, Bid game,
-      int trickCount) {
-    int tricksRequired = gr.getGameTricksRequired(game);
-    int gameValue = gr.getGameValue(game);
-    boolean gameWon = (trickCount > tricksRequired);
-
-    int allVistersTricks = 0;
     for (Seat seat : getSeats()) {
-      if (seat != winner) {
-        int tricks = deal.getTricksCount(seat);
-        allVistersTricks += tricks;
-        if (!gameWon) {
-          // if game is not won - add appropriate tricks to every vister
-          tricks += (tricksRequired - trickCount);
-        }
-        getScoreSeq(seat, vists.get(winner)).addValue(tricks * gameValue);
+      if (seat == deal.getContract().getWinnerSeat()) { // wins or fines
+        updateWinnerScore(deal, sTricks);
+      } else {
+        updateVisterScore(deal, sTricks, seat);
       }
     }
-    return allVistersTricks;
+    //
+    // int wTricks = deal.getTricksCount(winner);
+    // // check if winner performed the game well
+    // // performer
+    // updateWinnerScores(winner, game, wTricks);
+    // // TODO deal with pass visters - no fines update, not vists if winner has
+    // // won the game
+    // // visters - vists
+    // int allVistersTricks = updateVistersVists(deal, winner, game, wTricks);
+    // // visters - fines
+    // updateVistersFines(deal, winner, game, allVistersTricks);
   }
 
-  private void updateWinnerScores(Seat winner, Bid game, int trickCount) {
-    int gameValue = gr.getGameValue(game);
+  private void updateVisterScore(PrefDeal deal, Map<Seat, Integer> sTricks,
+      Seat seat) throws DealException {
+    Contract c = deal.getContract();
+    Bid game = c.getGame();
+    Seat winner = c.getWinnerSeat();
+    int trickCount = sTricks.get(winner);
     int tricksRequired = gr.getGameTricksRequired(game);
     boolean gameWon = trickCount >= tricksRequired;
+    int gameValue = gr.getGameValue(game);
+    int allVistersTricksCount = 10 - trickCount;
+    // vists
+    int tricks = sTricks.get(seat);
+    getScoreSeq(seat, vists.get(winner)).addValue(tricks * gameValue);
+    // fines
+    if (gameWon) {
+      if (c.getVisters().contains(seat)
+          && allVistersTricksCount < gr.getVistersRequiredTricks(game)) {
+        int tDiff = gr.getVistersRequiredTricks(game) - allVistersTricksCount;
+        // seat is vister and it should be fined - not enough tricks
+        int finesCnt;
+        if (c.getVisters().size() == 2) { // if two visters - each has its own
+                                          // fines
+          int upToRequired = tricks >= gr.getEachVisterRequired(game) ? 0 : gr
+              .getEachVisterRequired(game)
+              - tricks;
+          finesCnt = Math.min(tDiff, upToRequired);
+        } else {
+          finesCnt = tDiff;
+        }
+        getFines(seat).addValue(gameValue * finesCnt);
+      }
+    }
+  }
+
+  private void updateWinnerScore(PrefDeal deal, Map<Seat, Integer> sTricks)
+      throws DealException {
+    Contract c = deal.getContract();
+    Bid game = c.getGame();
+    Seat winner = c.getWinnerSeat();
+    int trickCount = sTricks.get(winner);
+    int tricksRequired = gr.getGameTricksRequired(game);
+    boolean gameWon = trickCount >= tricksRequired;
+    int gameValue = gr.getGameValue(game);
     if (gameWon) {
       getWins(winner).addValue(gameValue);
     } else {
       getFines(winner).addValue(gameValue * (tricksRequired - trickCount));
     }
   }
+
+  private Map<Seat, Integer> getScorableTricks(PrefDeal deal)
+      throws DealException {
+    Contract c = deal.getContract();
+    Bid game = c.getGame();
+    Seat winner = c.getWinnerSeat();
+    int gameTricksRequired = gr.getGameTricksRequired(game);
+    int winnerTricks = deal.getTricksCount(winner);
+    boolean gameWon = winnerTricks >= gameTricksRequired;
+    int diff = 0;
+    // if game is not won - add diff to non-player's tricks
+    if (!gameWon) {
+      diff = gameTricksRequired - winnerTricks;
+    }
+
+    // determine tricks that should be taken into account
+    Map<Seat, Integer> sTricks = new HashMap<Seat, Integer>();
+    sTricks.put(winner, deal.getTricksCount(winner));
+    if (c.getVisters().isEmpty() || c.getVisters().size() == 2) {
+      // all vist or no visters - as is
+      for (Seat s : getSeats()) {
+        if (s != winner) {
+          sTricks.put(s, deal.getTricksCount(s) + diff);
+        }
+      }
+    } else if (c.getVisters().size() == 1) {
+      // if one vister - add passer's tricks to vister's
+      Seat vister = c.getVisters().get(0);
+      int passTricks = 0;
+      for (Seat s : getSeats()) {
+        if (s != winner && s != vister) {
+          passTricks = deal.getTricksCount(s);
+          sTricks.put(s, diff);
+        }
+      }
+      int vistTricks = deal.getTricksCount(vister);
+      sTricks.put(vister, vistTricks + passTricks + diff);
+    }
+    return sTricks;
+  }
+
 
   private Map<Seat, ScoreSeq> copyScoreSeqMap(Map<Seat, ScoreSeq> source) {
     Map<Seat, ScoreSeq> dest = new HashMap<Seat, ScoreSeq>();
@@ -195,9 +232,6 @@ public class Score {
   }
 
   public Map<Seat, Float> getSeatResults() {
-    // TODO deal with vists
-    // TODO may be it'd be better to work with Map<Seat, Integer>
-    // instead of Map<Seat, ScoreSeq>
     Map<Seat, ScoreSeq> rFines = copyScoreSeqMap(fines);
     Map<Seat, ScoreSeq> rWins = copyScoreSeqMap(wins);
     // subtract wins from fines
@@ -266,7 +300,8 @@ public class Score {
     return minFine;
   }
 
-  private void updateMiser(PrefDeal deal, Contract c) throws DealException {
+  private void updateForMiser(PrefDeal deal) throws DealException {
+    Contract c = deal.getContract();
     Seat winner = c.getWinnerSeat();
     int tricks = deal.getTricksCount(winner);
     if (tricks == 0) {
@@ -276,7 +311,7 @@ public class Score {
     }
   }
 
-  private void updateAllPass(PrefDeal deal) {
+  private void updateForAllPass(PrefDeal deal) {
     // XXX deal with different pass strategies ??? What does it mean?!
     // Butthead, be more concrete!!!
     int allPassValue = 1;

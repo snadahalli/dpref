@@ -43,6 +43,7 @@ public class Contract {
   private final Set<Seat> seatsPassed = new HashSet<Seat>();
   private Seat miserBiden = null;
   private Seat vistByHalf = null;
+  
 
   private void initAllBids() {
     for (Rank r : ranksBeforeMiser) {
@@ -63,6 +64,7 @@ public class Contract {
     }
   }
 
+  
   public boolean isBidCorrect(Seat seat, Bid bid) {
     if (bid == Bid.PASS) {
       // pass always acceptable
@@ -303,6 +305,11 @@ public class Contract {
 
   public Seat getVistByHalf() {
     return vistByHalf;
+  }
+
+
+  public List<Seat> getVisters() {
+    return visters;
   }
 
 }

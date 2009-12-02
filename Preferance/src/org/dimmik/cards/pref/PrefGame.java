@@ -9,11 +9,6 @@ import org.dimmik.cards.table.Game;
 import org.dimmik.cards.table.Seat;
 
 
-/*
- * TODO score update
- * TODO document everything
- */
-
 /**
  * Pref game - class incapsulates game preferences. Score, rules, etc.
  * @author dkandrievsky
@@ -64,7 +59,7 @@ public class PrefGame extends Game {
   @Override
   protected void updateGameStatus(Deal deal) throws DealException {
     if (!(deal instanceof PrefDeal)) {
-      throw new IllegalStateException("deal must be PrefDeal");
+      throw new IllegalStateException("deal must be instance of " + PrefDeal.class);
     }
     score.update((PrefDeal)deal);
   }
