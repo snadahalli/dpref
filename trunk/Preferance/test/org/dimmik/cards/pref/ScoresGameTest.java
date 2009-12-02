@@ -1,5 +1,6 @@
 package org.dimmik.cards.pref;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +45,8 @@ public class ScoresGameTest extends TestCase {
     System.out.println("deal: " + deal + " bid: " + bid);
     for (Seat seat : seats) {
       System.out.println(seat + " -> " + score.getResult(seat));
+      System.out.println("fines: " + score.getFines(seat));
+      System.out.println("wins: " + score.getWins(seat));
     }
     assertEquals(expected, Float.valueOf(score.getResult(n)).intValue());
   }
@@ -89,9 +92,9 @@ public class ScoresGameTest extends TestCase {
   }
 
   private Contract getContract(final List<Seat> seats, final Bid bid) {
-    // final Seat w = seats.get(0);
+    final Seat w = seats.get(0);
     final Seat n = seats.get(1);
-    // final Seat e = seats.get(2);
+    final Seat e = seats.get(2);
     final Contract c = new Contract(seats) {
 
       @Override
@@ -102,6 +105,17 @@ public class ScoresGameTest extends TestCase {
       @Override
       public Seat getWinnerSeat() {
         return n; // North
+      }
+
+      @Override
+      public List<Seat> getVisters() {
+        List<Seat> visters = new ArrayList<Seat>() {
+          {
+            add(w);
+            add(e);
+          }
+        };
+        return visters;
       }
 
     };

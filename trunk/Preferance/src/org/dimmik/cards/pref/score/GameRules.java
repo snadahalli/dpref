@@ -32,6 +32,7 @@ public class GameRules {
   public int getVistersRequiredTricks(Bid bid) {
     return getVistersRequiredTricks(bid.getRank());
   }
+  
 
   public int getGameValue(Bid bid) {
     return getGameValue(bid.getRank());
@@ -47,4 +48,12 @@ public class GameRules {
   // public int getHalfOfVistersRequiredTricks(Rank r){
   //    
   // }
+
+  public int getEachVisterRequired(Bid game) {
+    int eachRequired = 2;
+    if (getVistersRequiredTricks(game) <4) {
+      eachRequired = 1;
+    }
+    return eachRequired;
+  }
 }
