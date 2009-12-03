@@ -10,8 +10,8 @@ import org.dimmik.cards.table.ITradeStepInfo;
 
 public class PrefTradeStepInfo implements ITradeStepInfo {
   
-  private Card firstThrown;
-  private Card secondThrown;
+
+  private PrefDeal.TwoCards thrown;
   private Bid bid;
   private Bid game;
   private Bid vist;
@@ -35,25 +35,11 @@ public class PrefTradeStepInfo implements ITradeStepInfo {
     return step;
   }
 
-  public Card getFirstThrown() {
-    return firstThrown;
-  }
-
-  public Card getSecondThrown() {
-    return secondThrown;
-  }
 
   public Bid getGame() {
     return game;
   }
 
-  public void setFirstThrown(Card firstThrown) {
-    this.firstThrown = firstThrown;
-  }
-
-  public void setSecondThrown(Card secondThrown) {
-    this.secondThrown = secondThrown;
-  }
 
   public void setGame(Bid game) {
     this.game = game;
@@ -80,5 +66,13 @@ public class PrefTradeStepInfo implements ITradeStepInfo {
   
   public boolean isVistStepOk(Bid bid){
     return availableBids.contains(bid);
+  }
+
+  public PrefDeal.TwoCards getThrown() {
+    return thrown;
+  }
+
+  public void setThrown(PrefDeal.TwoCards thrown) {
+    this.thrown = thrown;
   }
 }

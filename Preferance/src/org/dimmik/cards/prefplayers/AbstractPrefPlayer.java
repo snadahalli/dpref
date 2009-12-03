@@ -42,8 +42,7 @@ public abstract class AbstractPrefPlayer implements IPlayer {
       break;
     case GET_THROWN_CARDS:
       PrefDeal.TwoCards thrown = getThrownCards(seat, d);
-      bc.setFirstThrown(thrown.getFirst());
-      bc.setSecondThrown(thrown.getSecond());
+      bc.setThrown(thrown);
       break;
     case SET_GAME:
       Bid game = setGame(seat, d);
