@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.dimmik.cards.sheets.card.Card;
 import org.dimmik.cards.sheets.card.Suit;
+import org.dimmik.cards.table.Deal;
 import org.dimmik.cards.table.Seat;
 
 
@@ -17,8 +18,8 @@ public class PrefPassMove extends PrefMove {
 
   private final Card sideCard;
   
-  public PrefPassMove(List<Seat> seats, int first, Card sideCard) {
-    super(seats, first, Suit.NO_SUIT);
+  public PrefPassMove(Deal d, List<Seat> seats, int first, Card sideCard) {
+    super(d, seats, first, Suit.NO_SUIT);
     getCards().add(sideCard);
     this.sideCard = sideCard;
   }

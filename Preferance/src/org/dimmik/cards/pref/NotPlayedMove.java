@@ -3,6 +3,7 @@ package org.dimmik.cards.pref;
 import java.util.List;
 
 import org.dimmik.cards.sheets.card.Card;
+import org.dimmik.cards.table.Deal;
 import org.dimmik.cards.table.Move;
 import org.dimmik.cards.table.Seat;
 
@@ -10,8 +11,8 @@ public class NotPlayedMove extends Move {
 
   private final Seat winner;
   
-  protected NotPlayedMove(List<Seat> s, int first, Seat winner) {
-    super(s, first);
+  protected NotPlayedMove(Deal d, List<Seat> s, int first, Seat winner) {
+    super(d, s, first);
    this.winner = winner;
   }
 

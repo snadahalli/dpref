@@ -94,11 +94,11 @@ public class PrefDeal extends Deal {
     if (allPassGame && getMoves().size() < 2) {
       Card f = sideCards.getFirst();
       Card s = sideCards.getSecond();
-      PrefPassMove move = new PrefPassMove(seats, currentMove, getMoves()
+      PrefPassMove move = new PrefPassMove(this, seats, currentMove, getMoves()
           .size() == 0 ? f : s);
       return move;
     } else {
-      PrefMove move = new PrefMove(seats, currentMove, trump);
+      PrefMove move = new PrefMove(this, seats, currentMove, trump);
       return move;
     }
   }
@@ -316,11 +316,11 @@ public class PrefDeal extends Deal {
       Seat byHalf = contract.getVistByHalf();
       if (byHalf != null) {
         for (int i = 0; i < Score.getHalfTricsCnt(game); i++) {
-          addTrick(byHalf, new NotPlayedMove(seats, 0, byHalf));
+          addTrick(byHalf, new NotPlayedMove(this, seats, 0, byHalf));
         }
       }
       for (int i = 0; i < Score.getWinnerTricksRequired(game); i++) {
-        addTrick(winner, new NotPlayedMove(seats, 0, winner));
+        addTrick(winner, new NotPlayedMove(this, seats, 0, winner));
       }
     }
   }
