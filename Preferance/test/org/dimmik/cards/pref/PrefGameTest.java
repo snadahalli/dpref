@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.dimmik.cards.pref.PrefDeal;
 import org.dimmik.cards.pref.PrefGameFactory;
+import org.dimmik.cards.pref.score.DealCountBasedScore;
 import org.dimmik.cards.table.Deal;
 import org.dimmik.cards.table.Game;
 import org.dimmik.cards.table.GameException;
@@ -34,15 +35,17 @@ public class PrefGameTest extends TestCase {
     assertEquals(gamesCnt, game.getDeals().size());
     check(game);
   }
-  public void testSemiVisters() throws Throwable{
+
+  public void testSemiVisters() throws Throwable {
     System.out.println("testGame");
     int gamesCnt = 15;
     List<Seat> seats = PrefTestUtility.getSemiVistersSeats();
-    doTest(gamesCnt, seats);    
+    doTest(gamesCnt, seats);
   }
 
   private Game getGame(int gamesCnt, List<Seat> seats) throws GameException {
-    GameFactory factory = new PrefGameFactory(gamesCnt);
+    GameFactory factory = new PrefGameFactory(new DealCountBasedScore(gamesCnt,
+        seats.get(0), seats.get(1), seats.get(2)));
     Game game = factory.createGame(seats);
     game.process();
     return game;

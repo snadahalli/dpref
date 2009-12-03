@@ -10,13 +10,13 @@ import org.dimmik.cards.table.Seat;
 // TODO work with score, not deals...
 public class PrefGameFactory implements GameFactory {
 
-  private int deals;
-  public PrefGameFactory(int deals) {
-    this.deals = deals;
+  private Score score;
+  public PrefGameFactory(Score score) {
+    this.score = score;
   }
   
   public PrefGame createGame(List<Seat> seats) {
-    return new PrefGame(new Score(deals, seats.get(0), seats.get(1), seats.get(2)));
+    return new PrefGame(score);
   }
 
 }
