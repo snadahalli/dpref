@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.dimmik.cards.pref.trade.Bid;
-import org.dimmik.cards.sheets.card.Card;
 import org.dimmik.cards.sheets.card.Rank;
 
 public class GameRules {
