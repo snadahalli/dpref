@@ -108,6 +108,7 @@ public class ScoresGameTest extends TestCase {
         return n; // North
       }
 
+      @SuppressWarnings("serial")
       @Override
       public List<Seat> getVisters() {
         List<Seat> visters = new ArrayList<Seat>() {

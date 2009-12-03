@@ -8,11 +8,8 @@ import java.util.Map;
 import org.dimmik.cards.pref.PrefDeal;
 import org.dimmik.cards.pref.trade.Bid;
 import org.dimmik.cards.pref.trade.Contract;
-import org.dimmik.cards.prefplayers.DumbPlayer;
-import org.dimmik.cards.sheets.card.Rank;
 import org.dimmik.cards.table.Deal;
 import org.dimmik.cards.table.DealException;
-import org.dimmik.cards.table.IPlayer;
 import org.dimmik.cards.table.Seat;
 
 public abstract class Score {
