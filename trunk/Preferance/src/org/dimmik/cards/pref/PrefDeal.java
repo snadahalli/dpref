@@ -398,11 +398,8 @@ public class PrefDeal extends Deal {
     PrefTradeStepInfo stInfo = new PrefTradeStepInfo(
         PrefTradeStep.GET_THROWN_CARDS);
     winner.tradeStep(this, stInfo);
-    checkCardAreCorrectlyThrown(winner, stInfo.getFirstThrown(), stInfo
-        .getSecondThrown());
-    Card f = stInfo.getFirstThrown();
-    Card s = stInfo.getSecondThrown();
-    thrownCards = new TwoCards(f, s);
+    checkCardAreCorrectlyThrown(winner, stInfo.getThrown().getFirst(), stInfo.getThrown().getSecond());
+    thrownCards = stInfo.getThrown();
   }
 
   /**
