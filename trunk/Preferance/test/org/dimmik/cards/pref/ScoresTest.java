@@ -5,6 +5,7 @@ import java.util.List;
 import org.dimmik.cards.pref.PrefDeal;
 import org.dimmik.cards.pref.PrefGame;
 import org.dimmik.cards.pref.PrefGameFactory;
+import org.dimmik.cards.pref.score.DealCountBasedScore;
 import org.dimmik.cards.pref.score.Score;
 import org.dimmik.cards.table.Deal;
 import org.dimmik.cards.table.Move;
@@ -18,7 +19,8 @@ public class ScoresTest extends TestCase {
     System.out.println("testAllPass");
     int gamesCnt = 30;
     List<Seat> seats = PrefTestUtility.getAllPassSeats();
-    PrefGameFactory factory = new PrefGameFactory(gamesCnt);
+    PrefGameFactory factory = new PrefGameFactory(new DealCountBasedScore(
+        gamesCnt, seats.get(0), seats.get(1), seats.get(2)));
     PrefGame game = factory.createGame(seats);
     game.process();
     for (Deal dx : game.getDeals()) {
@@ -46,7 +48,8 @@ public class ScoresTest extends TestCase {
     System.out.println("\ntestMiserer");
     int gamesCnt = 30;
     List<Seat> seats = PrefTestUtility.getNorthMiserSeats();
-    PrefGameFactory factory = new PrefGameFactory(gamesCnt);
+    PrefGameFactory factory = new PrefGameFactory(new DealCountBasedScore(
+        gamesCnt, seats.get(0), seats.get(1), seats.get(2)));
     PrefGame game = factory.createGame(seats);
     game.process();
     // for (Deal dx : game.getDeals()) {
@@ -73,7 +76,8 @@ public class ScoresTest extends TestCase {
     System.out.println("\ntestDumbs");
     int gamesCnt = 10;
     List<Seat> seats = PrefTestUtility.getSeats();
-    PrefGameFactory factory = new PrefGameFactory(gamesCnt);
+    PrefGameFactory factory = new PrefGameFactory(new DealCountBasedScore(
+        gamesCnt, seats.get(0), seats.get(1), seats.get(2)));
     PrefGame game = factory.createGame(seats);
     game.process();
     for (Deal dx : game.getDeals()) {

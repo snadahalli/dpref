@@ -15,16 +15,12 @@ import org.dimmik.cards.table.DealException;
 import org.dimmik.cards.table.IPlayer;
 import org.dimmik.cards.table.Seat;
 
-public class Score {
+public abstract class Score {
   private final Seat west;
   private final Seat north;
   private final Seat east;
 
   private final List<Deal> deals = new ArrayList<Deal>();
-
-  private final int maxDeals;
-
-  private static final IPlayer dumb = new DumbPlayer();
 
   private static final GameRules gr = new GameRules();
 
@@ -45,13 +41,12 @@ public class Score {
     return gr.getGameTricksRequired(game);
   }
 
-  public Score(int deals) {
-    this(deals, new Seat("West", dumb), new Seat("North", dumb), new Seat(
-        "East", dumb));
-  }
+//  public Score(int deals) {
+//    this(deals, new Seat("West", dumb), new Seat("North", dumb), new Seat(
+//        "East", dumb));
+//  }
 
-  public Score(int maxDeals, Seat west, Seat north, Seat east) {
-    this.maxDeals = maxDeals;
+  public Score(Seat west, Seat north, Seat east) {
     this.west = west;
     this.north = north;
     this.east = east;
@@ -340,13 +335,9 @@ public class Score {
     return getScoreSeq(seat, wins);
   }
 
-  public int getMaxDeals() {
-    return maxDeals;
-  }
-
-  public boolean isGameFinished() {
+  public abstract boolean isGameFinished(); /*{
     return deals.size() >= maxDeals;
-  }
+  }*/
 
   public List<Seat> getSeats() {
     List<Seat> seats = new ArrayList<Seat>();
