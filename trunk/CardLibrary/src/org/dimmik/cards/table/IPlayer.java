@@ -16,7 +16,7 @@ public interface IPlayer {
    * @param move
    * @return
    */
-  Card nextCard(Seat seat, Move move);
+  Card nextCard(Seat seat, Deal d, Move move);
 
   /**
    * trade step

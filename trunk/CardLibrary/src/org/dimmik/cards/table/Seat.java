@@ -6,8 +6,7 @@ import java.util.List;
 
 import org.dimmik.cards.sheets.card.Card;
 
-
-public class Seat implements Serializable{
+public class Seat implements Serializable {
 
   /**
    * 
@@ -21,15 +20,10 @@ public class Seat implements Serializable{
   public Seat(String name) {
     this.name = name;
   }
+
   public Seat(String name, IPlayer player) {
     this(name);
     setPlayer(player);
-  }
-
-  public Card nextCard(Move move) {
-    Card card = player.nextCard(this, move);
-    cards.remove(card);
-    return card;
   }
 
   public void addCard(Card c) {
@@ -57,8 +51,17 @@ public class Seat implements Serializable{
     return name;
   }
 
+  // -------------------
+  // delegate to player
+  // -------------------
+  public Card nextCard(Deal d, Move move) {
+    Card card = player.nextCard(this, d, move);
+    cards.remove(card);
+    return card;
+  }
+
   public void tradeStep(Deal d, ITradeStepInfo stInfo) {
     player.tradeStep(this, d, stInfo);
   }
-  
+
 }

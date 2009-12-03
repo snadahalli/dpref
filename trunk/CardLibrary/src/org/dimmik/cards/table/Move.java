@@ -15,14 +15,17 @@ public abstract class Move {
   private final List<Seat> seats;
   private final List<Card> cards = new ArrayList<Card>();
   private final List<Turn> turns = new ArrayList<Turn>();
-
-  protected Move(List<Seat> s, int first) {
+  private final Deal deal;
+  
+  
+  protected Move(Deal d, List<Seat> s, int first) {
     if (s == null || first >= s.size()) {
       throw new IllegalArgumentException("first should be inside seats, not "
           + first);
     }
     List<Seat> correctlyArranged = rearrange(s, first);
     seats = correctlyArranged;
+    deal = d;
   }
 
   private List<Seat> rearrange(List<Seat> s, int first) {
@@ -38,7 +41,7 @@ public abstract class Move {
 
   public void process() throws CardIsNotAcceptableException {
     for (Seat seat : seats) {
-      Card card = seat.nextCard(this);
+      Card card = seat.nextCard(deal, this);
       if (!isCardAcceptable(card, seat)) {
         throw new CardIsNotAcceptableException(card, seat);
       }

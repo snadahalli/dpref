@@ -13,9 +13,13 @@ import org.dimmik.cards.table.ITradeStepInfo;
 import org.dimmik.cards.table.Move;
 import org.dimmik.cards.table.Seat;
 
-public abstract class AbstractPlayer implements IPlayer {
+public abstract class AbstractPrefPlayer implements IPlayer {
 
-  public abstract Card nextCard(Seat seat, Move move);
+  public final Card nextCard(Seat seat, Deal d, Move move) {
+    return nextCard(seat, (PrefDeal) d, move);
+  }
+
+  public abstract Card nextCard(Seat seat, PrefDeal d, Move move);
 
   public void tradeStep(Seat seat, Deal d, ITradeStepInfo bc) {
     if (!(d instanceof PrefDeal)) {

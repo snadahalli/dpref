@@ -9,6 +9,7 @@ import org.dimmik.cards.pref.PrefDeal.TwoCards;
 import org.dimmik.cards.pref.trade.Bid;
 import org.dimmik.cards.pref.trade.Contract;
 import org.dimmik.cards.sheets.card.Card;
+import org.dimmik.cards.table.Deal;
 import org.dimmik.cards.table.Move;
 import org.dimmik.cards.table.Seat;
 
@@ -19,7 +20,7 @@ import org.dimmik.cards.table.Seat;
  * @author dkandrievsky
  * 
  */
-public class DumbPlayer extends AbstractPlayer {
+public class DumbPlayer extends AbstractPrefPlayer {
 
   private final static Random r = new Random();
   private final int passProbability;
@@ -40,7 +41,7 @@ public class DumbPlayer extends AbstractPlayer {
   }
 
   @Override
-  public Card nextCard(Seat seat, Move move) {
+  public Card nextCard(Seat seat, PrefDeal d, Move move) {
     for (Card card : seat.getCards()) {
       if (move.isCardAcceptable(card, seat)) {
         return card;

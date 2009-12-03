@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.dimmik.cards.sheets.card.Card;
 import org.dimmik.cards.sheets.card.Suit;
+import org.dimmik.cards.table.Deal;
 import org.dimmik.cards.table.Move;
 import org.dimmik.cards.table.Seat;
 
@@ -15,8 +16,8 @@ public class PrefMove extends Move {
    */
   private final Suit trump;
 
-  public PrefMove(List<Seat> seats, int first, Suit trump) {
-    super(seats, first);
+  public PrefMove(Deal d, List<Seat> seats, int first, Suit trump) {
+    super(d, seats, first);
     if (trump == null){
       throw new IllegalArgumentException("trump can not be null");
     }
